@@ -8,6 +8,54 @@ import { Link } from '@inertiajs/react';
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
+    function userName(u){
+        if (u !== null) return u.name;
+        return "Invitado";
+    }
+
+    function userOptions(u){
+        if (u !== null) {
+            return (
+                <>
+                <Dropdown.Link href={route('profile.edit')}>Perfil</Dropdown.Link>
+                <Dropdown.Link href={route('logout')} method="post" as="button">
+                    Cerrar sesión
+                </Dropdown.Link>
+                </>
+            );
+        }
+        return (
+            <>
+            <Dropdown.Link href={route('login')}>
+                Iniciar sesión
+            </Dropdown.Link>
+            <Dropdown.Link href={route('register')}>
+                Registrarse
+            </Dropdown.Link>
+            </>
+        )
+    }
+
+    function userOptionsPhone(u){
+        if (u !== null) {
+            return (
+                <>
+                <ResponsiveNavLink href={route('profile.edit')}>Perfil</ResponsiveNavLink>
+                <ResponsiveNavLink method="post" href={route('logout')} as="button">
+                    Cerrar sesión
+                </ResponsiveNavLink>
+                </>
+            );
+        }
+        return (
+            <>
+            <ResponsiveNavLink href={route('login')}>
+                Iniciar sesión
+            </ResponsiveNavLink>
+            </>
+        )
+    }
+
     return (
         <div className="min-h-screen bg-gray-100">
             <nav className="bg-white border-b border-gray-100">
@@ -22,7 +70,7 @@ export default function Authenticated({ user, header, children }) {
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    Dashboard
+                                    Inicio
                                 </NavLink>
                             </div>
                         </div>
@@ -36,7 +84,7 @@ export default function Authenticated({ user, header, children }) {
                                                 type="button"
                                                 className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                {user.name}
+                                                {userName(user)}
 
                                                 <svg
                                                     className="ms-2 -me-0.5 h-4 w-4"
@@ -55,10 +103,7 @@ export default function Authenticated({ user, header, children }) {
                                     </Dropdown.Trigger>
 
                                     <Dropdown.Content>
-                                        <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
-                                        <Dropdown.Link href={route('logout')} method="post" as="button">
-                                            Log Out
-                                        </Dropdown.Link>
+                                        {userOptions(user)}
                                     </Dropdown.Content>
                                 </Dropdown>
                             </div>
@@ -93,21 +138,17 @@ export default function Authenticated({ user, header, children }) {
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                     <div className="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                            Dashboard
+                            Inicio
                         </ResponsiveNavLink>
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200">
                         <div className="px-4">
-                            <div className="font-medium text-base text-gray-800">{user.name}</div>
-                            <div className="font-medium text-sm text-gray-500">{user.email}</div>
+                            <div className="font-medium text-base text-gray-800">{userName(user)}</div>
                         </div>
 
                         <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>Profile</ResponsiveNavLink>
-                            <ResponsiveNavLink method="post" href={route('logout')} as="button">
-                                Log Out
-                            </ResponsiveNavLink>
+                            {userOptionsPhone(user)}
                         </div>
                     </div>
                 </div>
