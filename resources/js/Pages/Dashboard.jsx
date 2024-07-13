@@ -7,7 +7,7 @@ import { Marker } from 'react-leaflet';
 import { Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-export default function Dashboard({ auth }) {
+export default function Dashboard({ auth, estacion }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -20,10 +20,22 @@ export default function Dashboard({ auth }) {
                     
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg columns-2">
 
-                        <div className='m-4'>
+                        <div className='m-2'>
                             <div className='p-2 bg-green-100 rounded-2xl text-green-900 flex'>
                                 <div className='flex-initial w-8 content-center'><InfoIcon></InfoIcon></div>
                                 <div className='flex-auto'>Haz click en las estaciones del mapa para ver su infomación</div>
+                            </div>
+
+                            <div className='mt-4 overflow-hidden rounded-2xl border-8 border-double'>
+                                <div className='columns-2'>
+                                    <div className='p-2 font-bold bg-gray-100'>Nombre de la estacion:</div>
+                                    <div className='p-2'>{estacion.nombre}</div>
+                                </div>
+
+                                <div className='columns-2'>
+                                    <div className='p-2 font-bold bg-gray-200'>Tipo de estacion:</div>
+                                    <div className='p-2'>{estacion.tipo}</div>
+                                </div>
                             </div>
                         </div>
 
@@ -32,9 +44,9 @@ export default function Dashboard({ auth }) {
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             />
-                            <Marker position={[13.8007, -88.8052]}>
+                            <Marker position={[estacion.latitud, estacion.longitud]}>
                                 <Popup>
-                                    Estación de ejemplo
+                                    {estacion.nombre}
                                 </Popup>
                             </Marker>
                         </MapContainer>

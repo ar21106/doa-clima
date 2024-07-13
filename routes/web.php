@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\EstacionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+Route::get('/', [EstacionController::class, 'index']
+)->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
