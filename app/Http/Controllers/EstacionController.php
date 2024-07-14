@@ -6,6 +6,7 @@ use App\Models\Estacion;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\DB;
 
 class EstacionController extends Controller
 {
@@ -14,16 +15,10 @@ class EstacionController extends Controller
      */
     public function index(): Response
     {
-        $estacion = (object)[
-            'nombre' => 'estacion de ejemplo',
-            'descripcion' => 'esta es una estacion de ejemplo',
-            'tipo' => 'pluvial',
-            'latitud' => 13.7101,
-            'longitud' => -89.2035
-        ];
+        $estaciones = DB::table('estaciones')->get();
 
         return Inertia::render('Dashboard', [
-            'estacion' => $estacion
+            'estaciones' => $estaciones
         ]);
     }
 
