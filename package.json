@@ -20,7 +20,11 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@mdi/js": "^7.4.47",
+        "@mdi/react": "^1.6.1",
         "leaflet": "^1.9.4",
-        "react-leaflet": "^4.2.1"
+        "plotly.js": "^2.33.0",
+        "react-leaflet": "^4.2.1",
+        "react-plotly.js": "^2.6.0"
     }
 }

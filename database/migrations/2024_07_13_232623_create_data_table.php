@@ -53,6 +53,11 @@ return new class extends Migration
             $table->time('fgra')->nullable();
             $table->time('fchu')->nullable();
 
+            $table->string('prn07')->nullable();
+            $table->string('prn14')->nullable();
+            $table->string('prn21')->nullable();
+            $table->string('prn')->nullable();
+
             $table->string('rd07')->nullable();
             $table->string('rd14')->nullable();
             $table->string('rd21')->nullable();
@@ -78,6 +83,31 @@ return new class extends Migration
 
             $table->integer('er07')->nullable();
             $table->integer('er21')->nullable();
+
+            $table->string('pa07')->nullable();
+            $table->string('pa14')->nullable();
+            $table->string('pa21')->nullable();
+            $table->string('pa')->nullable();
+
+            $table->string('evap')->nullable();
+
+            $table->string('ls07')->nullable();
+            $table->string('ls08')->nullable();
+            $table->string('ls09')->nullable();
+            $table->string('ls10')->nullable();
+            $table->string('ls11')->nullable();
+
+            $table->string('ls12')->nullable();
+            $table->string('ls13')->nullable();
+            $table->string('ls14')->nullable();
+            $table->string('ls15')->nullable();
+            $table->string('ls16')->nullable();
+
+            $table->string('ls17')->nullable();
+            $table->string('ls18')->nullable();
+            $table->string('lsm')->nullable();
+            $table->string('lst')->nullable();
+            $table->string('ls')->nullable();
 
             $table->string('codcaptura');
             $table->double('tosc')->nullable();

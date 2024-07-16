@@ -17,10 +17,12 @@ class EstacionController extends Controller
     {
         $estacionesMap = DB::table('estaciones')->get();
         $estacion = DB::table('estaciones')->where('indice', $codigo)->first();
+        $data = DB::table('data')->where('indice', $codigo)->whereBetween('fecha', ['2021-01-01', '2022-12-31'])->get();
 
         return Inertia::render('Dashboard', [
             'estacionesMap' => $estacionesMap,
-            'estacion' => $estacion
+            'estacion' => $estacion,
+            'data' => $data
         ]);
     }
 
