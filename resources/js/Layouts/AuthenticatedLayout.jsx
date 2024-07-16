@@ -8,11 +8,14 @@ import { Link } from '@inertiajs/react';
 export default function Authenticated({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
+    //obteniendo el nombre del usuario que ha iniciado sesión
+    //si no hay entonces es invitado
     function userName(u){
         if (u !== null) return u.name;
         return "Invitado";
     }
 
+    //mostrando las opciones correspondientes si es usuario registrado o invitado
     function userOptions(u){
         if (u !== null) {
             return (
@@ -36,6 +39,8 @@ export default function Authenticated({ user, header, children }) {
         )
     }
 
+    //mostrando las opciones correspondientes si es usuario registrado o invitado
+    //para resoluciones de smartPhone
     function userOptionsPhone(u){
         if (u !== null) {
             return (

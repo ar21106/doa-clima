@@ -13,12 +13,14 @@ class EstacionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(?string $codigo = "A-31"): Response
     {
-        $estaciones = DB::table('estaciones')->get();
+        $estacionesMap = DB::table('estaciones')->get();
+        $estacion = DB::table('estaciones')->where('indice', $codigo)->first();
 
         return Inertia::render('Dashboard', [
-            'estaciones' => $estaciones
+            'estacionesMap' => $estacionesMap,
+            'estacion' => $estacion
         ]);
     }
 

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('indice')->primary();
             $table->string('nombre');
             $table->string('descripcion');
+            $table->string('direccion');
             $table->double('latitud');
             $table->double('longitud');
         });
