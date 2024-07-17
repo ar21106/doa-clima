@@ -8,7 +8,7 @@ import 'leaflet/dist/leaflet.css';
 import Icon from '@mdi/react';
 import { mdiInformationOutline, mdiMapSearchOutline, mdiOpenInNew } from '@mdi/js';
 import Plot from 'react-plotly.js';
-import PrimaryButton from '@/Components/PrimaryButton';
+import ImageSlider from '@/Components/ImageSlider';
 
 export default function Dashboard({ auth, estacionesMap, estacion, data }) {
 
@@ -115,23 +115,22 @@ export default function Dashboard({ auth, estacionesMap, estacion, data }) {
 
                     </div>
 
-                    <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className='flex snap-x'>
-                            <div className='flex-initial size-full m-8 rounded-lg snap-center overflow-hidden'>
-                                <img src='/photos/A-31/1.jpeg'/>
-                            </div>
-                            <div className='flex-initial size-full m-8 rounded-lg snap-center overflow-hidden'>
-                                <img src='/photos/A-31/2.jpeg'/>
-                            </div>
-                            <div className='flex-initial size-full m-8 rounded-lg snap-center overflow-hidden'>
-                                <img src='/photos/A-31/3.jpeg'/>
-                            </div>
-                            <div className='flex-initial size-full m-8 rounded-lg snap-center overflow-hidden'>
-                                <img src='/photos/A-31/4.jpeg'/>
-                            </div>
-                            <div className='flex-initial size-full m-8 rounded-lg snap-center overflow-hidden'>
-                                <img src='/photos/A-31/5.jpeg'/>
-                            </div>
+                    <div className="mt-4 bg-white shadow-sm sm:rounded-lg">
+                        <div className='w-full mx-auto flex flex-row'>
+                            {
+                                //TODO Habilitar botones para navegar en el slider
+                            }
+                            <a>Back</a>
+                            <ImageSlider
+                                images={[
+                                    "/photos/A-31/1.jpeg",
+                                    "/photos/A-31/2.jpeg",
+                                    "/photos/A-31/3.jpeg",
+                                    "/photos/A-31/4.jpeg",
+                                    "/photos/A-31/5.jpeg"    
+                            ]}
+                            />
+                            <a>Next</a>
                         </div>
                     </div>
 

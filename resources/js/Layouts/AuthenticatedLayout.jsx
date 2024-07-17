@@ -61,7 +61,6 @@ export default function Authenticated({ user, header, children }) {
         )
     }
 
-    //TODO (Habilitar Smooth-scroll)
     return (
         <div className="min-h-screen bg-gray-100">
             <nav className="sticky top-0 bg-white border-b border-gray-100">
