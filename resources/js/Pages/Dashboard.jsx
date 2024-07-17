@@ -10,12 +10,13 @@ import { mdiInformationOutline, mdiMapSearchOutline, mdiOpenInNew } from '@mdi/j
 import Plot from 'react-plotly.js';
 import ImageSlider from '@/Components/ImageSlider';
 
-export default function Dashboard({ auth, estacionesMap, estacion, data }) {
+export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }) {
 
     //poniendo los pines en el mapa para las estaciones
     let estacionesMarker = estacionesMap.map(function (estacion) {
         return (
             <Marker
+                key={estacion.nombre}
                 position={[estacion.latitud, estacion.longitud]}
                 eventHandlers={{
                     click: (e) => {
@@ -68,13 +69,14 @@ export default function Dashboard({ auth, estacionesMap, estacion, data }) {
                     </div>
 
                     <div>
-                        <a href='#seccionDatos' className='scroll-smooth'>
+                        <a href='#seccionDatos'>
                             Ver datos de la estación
                         </a>
                     </div>
                 </div>
             );
         }
+
         return (
             <div className='bg-gray-200 flex flex-col justify-center place-items-center h-96 hover:bg-gray-300'>
                 <Icon path={mdiMapSearchOutline} size={3} />
@@ -116,21 +118,10 @@ export default function Dashboard({ auth, estacionesMap, estacion, data }) {
                     </div>
 
                     <div className="mt-4 bg-white shadow-sm sm:rounded-lg">
-                        <div className='w-full mx-auto flex flex-row'>
-                            {
-                                //TODO Habilitar botones para navegar en el slider
-                            }
-                            <a>Back</a>
+                        <div className='mx-auto'>
                             <ImageSlider
-                                images={[
-                                    "/photos/A-31/1.jpeg",
-                                    "/photos/A-31/2.jpeg",
-                                    "/photos/A-31/3.jpeg",
-                                    "/photos/A-31/4.jpeg",
-                                    "/photos/A-31/5.jpeg"    
-                            ]}
+                                images={fotos}
                             />
-                            <a>Next</a>
                         </div>
                     </div>
 

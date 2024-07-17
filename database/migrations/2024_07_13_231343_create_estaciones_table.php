@@ -19,6 +19,13 @@ return new class extends Migration
             $table->double('latitud');
             $table->double('longitud');
         });
+
+        Schema::create('fotos', function (Blueprint $table) {
+            $table->id('');
+            $table->string('indice');
+            $table->foreign('indice')->references('indice')->on('estaciones')->restrictOnDelete();
+            $table->string('name')->unique();
+        });
     }
 
     /**
@@ -27,5 +34,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('estaciones');
+        Schema::dropIfExists('fotos');
     }
 };

@@ -4,7 +4,11 @@ use App\Http\Controllers\EstacionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/{indice?}', [EstacionController::class, 'index']
+Route::get('/', function(){
+    return redirect('/mapa');
+});
+
+Route::get('/mapa/{indice?}', [EstacionController::class, 'index']
 )->name('dashboard');
 
 Route::middleware('auth')->group(function () {

@@ -1,17 +1,41 @@
+import { mdiChevronLeft } from "@mdi/js";
+import Icon from "@mdi/react";
+
 export default function ImageSlider({ images }) {
-  var i = 0;
+
+  function scrollH(n, dir){
+    //if tailwind's sm media query (mobile)
+    if(!window.matchMedia('(min-width: 640px)').matches){
+      n = n/2;
+    }
+    document.getElementById("slider").scrollLeft += n*dir;
+  }
+
   return (
-    <div className="w-full flex flex-row overflow-x-scroll overflow-y-hidden snap-x snap-mandatory h-96">
-      {images.map((url) => {
-        i += 1;
+    <div id="slider" className="flex flex-row overflow-x-scroll overflow-y-hidden snap-x snap-mandatory">
+      <button
+        className="sticky left-0 sm:hover:bg-gray-100"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollH(700, -1);
+        }}><Icon path={mdiChevronLeft} size={1.5}/>
+      </button>
+      {images.map((image) => {
         return (
-          <div className="w-full flex-shrink-0 flex justify-center items-center">
-            <div id={i} key={url} className="m-2 size-80 bg-black rounded-lg overflow-hidden snap-center flex items-center">
-              <a href={url} target="_blank"><img src={url}/></a>
+          <div key={image.name} className="w-full flex-shrink-0 flex justify-center snap-center items-center">
+            <div className="m-2 size-80 bg-black rounded-lg overflow-hidden flex items-center">
+              <a href={"/photos/"+image.name} target="_blank"><img src={"/photos/"+image.name} /></a>
             </div>
           </div>
         );
       })}
+      <button
+        className="sticky right-0 sm:hover:bg-gray-100"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollH(700, 1);
+        }}><Icon path={mdiChevronLeft} size={1.5} horizontal/>
+      </button>
     </div>
   );
 }

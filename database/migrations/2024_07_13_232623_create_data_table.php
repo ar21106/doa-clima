@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('data', function (Blueprint $table) {
             $table->string('codigo')->primary();
             $table->string('indice');
-            $table->foreign('indice')->references('indice')->on('estaciones');
+            $table->foreign('indice')->references('indice')->on('estaciones')->restrictOnDelete();
             $table->date('fecha');
 
             $table->double('tmax')->nullable();
