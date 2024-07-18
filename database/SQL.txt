@@ -6,8 +6,15 @@ INSERT INTO estaciones(indice, nombre, descripcion, direccion, latitud, longitud
 INSERT INTO fotos(indice, name) values('A-31','1.jpeg');
 INSERT INTO fotos(indice, name) values('A-31','2.jpeg');
 INSERT INTO fotos(indice, name) values('A-31','3.jpeg');
-INSERT INTO fotos(indice, name) values('A-31','4.jpeg');
-INSERT INTO fotos(indice, name) values('A-31','5.jpeg');
+INSERT INTO fotos(indice, name) values('G-03','4.jpeg');
+INSERT INTO fotos(indice, name) values('G-03','5.jpeg');
+INSERT INTO fotos(indice, name) values('G-03','6.jpeg');
+INSERT INTO fotos(indice, name) values('L-04','7.jpeg');
+INSERT INTO fotos(indice, name) values('L-04','8.jpeg');
+INSERT INTO fotos(indice, name) values('L-04','9.jpeg');
+INSERT INTO fotos(indice, name) values('U-06','10.jpeg');
+INSERT INTO fotos(indice, name) values('U-06','11.jpeg');
+INSERT INTO fotos(indice, name) values('U-06','12.jpeg');
 
 INSERT INTO data(codigo,indice,fecha,tmax,tmin,ts07,ts14,ts21,ts,th07,th14,th21,th,pvp07,pvp14,pvp21,pvp,hr07,hr14,hr21,hr,p07,p14,p21,pd,fray,ftea,ftee,fgra,fchu,prn07,prn14,prn21,prn,rd07,rd14,rd21,rd,sa07,sa14,sa21,sa,nub07,nub14,nub21,nub,vis07,vis14,vis21,es07,es14,es21,er07,er21,pa07,pa14,pa21,pa,evap,ls07,ls08,ls09,ls10,ls11,ls12,ls13,ls14,ls15,ls16,ls17,ls18,lsm,lst,ls,codcaptura,tosc,erd) values('A-31_23052018','A-31','2018-05-23',21,13.5,15.8,19.8,16.8,17.3,15.4,19.2,16.8,17.05,12.916948,16.381055,14.343431,14.547144,96,95,100,97,0,0.2,10.5,0,'20:50:00',null,null,null,'17:20:00',null,null,null,null,'C ','N ','C ','C ',0,1,0,0.3,6,8,6,6.6,5,3,0.2,1,1,2,2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,'A-3120185',7.5,1);
 INSERT INTO data(codigo,indice,fecha,tmax,tmin,ts07,ts14,ts21,ts,th07,th14,th21,th,pvp07,pvp14,pvp21,pvp,hr07,hr14,hr21,hr,p07,p14,p21,pd,fray,ftea,ftee,fgra,fchu,prn07,prn14,prn21,prn,rd07,rd14,rd21,rd,sa07,sa14,sa21,sa,nub07,nub14,nub21,nub,vis07,vis14,vis21,es07,es14,es21,er07,er21,pa07,pa14,pa21,pa,evap,ls07,ls08,ls09,ls10,ls11,ls12,ls13,ls14,ls15,ls16,ls17,ls18,lsm,lst,ls,codcaptura,tosc,erd) values('A-31_09052018','A-31','2018-05-09',20.8,12.6,14.2,20.4,15,16.15,12.8,16.4,14.6,14.6,10.381429,11.983147,12.258271,11.540949,86,67,96,83,0,0,0,0,null,null,null,null,null,null,null,null,null,'C ','W ','C ','C ',0,1,0,0.3,4,10,3,5.6,6,5,0.2,1,0,1,2,2,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,'A-3120185',8.2,1);

@@ -13,7 +13,7 @@ class EstacionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(?string $codigo = "A-31"): Response
+    public function index(?string $codigo = ""): Response
     {
         $estacionesMap = DB::table('estaciones')->get();
         $estacion = DB::table('estaciones')->where('indice', $codigo)->first();

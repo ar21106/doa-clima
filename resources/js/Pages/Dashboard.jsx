@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { MapContainer } from 'react-leaflet/MapContainer';
 import { TileLayer } from 'react-leaflet/TileLayer';
-import { ImageOverlay, Marker } from 'react-leaflet';
+import { Marker } from 'react-leaflet';
 import { Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import Icon from '@mdi/react';
@@ -20,15 +20,10 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                 position={[estacion.latitud, estacion.longitud]}
                 eventHandlers={{
                     click: (e) => {
-                        console.log('estacion ' + estacion.indice + ' clickeada')
-                        //TODO (Cargar pagina con /{indice} de la estacion clickeada)
+                        window.open("/mapa/" + estacion.indice, "_self");
                     }
                 }}
-            >
-                <Popup>
-                    {estacion.nombre}
-                </Popup>
-            </Marker>
+            />
         );
     });
 
@@ -88,6 +83,32 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
             </div>);
     }
 
+    //mostrando las fotos de la estacion
+    function estacionFotos(estacion) {
+        if (estacion !== null) {
+            return (
+                <div className="mt-4 bg-white shadow-sm sm:rounded-lg">
+                    <div className='mx-auto'>
+                        <ImageSlider
+                            images={fotos}
+                        />
+                    </div>
+                </div>
+            );
+        }
+    }
+
+    //mostrando los datos completos de la estacion
+    function estacionDatos(estacion) {
+        if (estacion !== null) {
+            return (
+                <div id='seccionDatos' className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    Datos de la estación
+                </div>
+            );
+        }
+    }
+
     //TODO (Enviar MapContainer atrás, al hacer scroll pasa por encima del encabezado de la pagina)
     return (
         <AuthenticatedLayout
@@ -117,17 +138,9 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
 
                     </div>
 
-                    <div className="mt-4 bg-white shadow-sm sm:rounded-lg">
-                        <div className='mx-auto'>
-                            <ImageSlider
-                                images={fotos}
-                            />
-                        </div>
-                    </div>
+                    {estacionFotos(estacion)}
 
-                    <div id='seccionDatos' className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        Datos de la estación
-                    </div>
+                    {estacionDatos(estacion)}
 
                 </div>
             </div>

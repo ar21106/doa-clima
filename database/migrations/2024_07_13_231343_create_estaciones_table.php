@@ -21,7 +21,7 @@ return new class extends Migration
         });
 
         Schema::create('fotos', function (Blueprint $table) {
-            $table->id('');
+            $table->id();
             $table->string('indice');
             $table->foreign('indice')->references('indice')->on('estaciones')->restrictOnDelete();
             $table->string('name')->unique();
