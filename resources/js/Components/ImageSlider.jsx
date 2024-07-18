@@ -3,6 +3,7 @@ import Icon from "@mdi/react";
 
 export default function ImageSlider({ images }) {
 
+  //TODO fix bug: scroll depends on resolution width and amount of images
   function scrollH(n, dir){
     //if tailwind's sm media query (mobile)
     if(!window.matchMedia('(min-width: 640px)').matches){

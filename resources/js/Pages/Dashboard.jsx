@@ -3,12 +3,12 @@ import { Head } from '@inertiajs/react';
 import { MapContainer } from 'react-leaflet/MapContainer';
 import { TileLayer } from 'react-leaflet/TileLayer';
 import { Marker } from 'react-leaflet';
-import { Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import Icon from '@mdi/react';
 import { mdiInformationOutline, mdiMapSearchOutline, mdiOpenInNew } from '@mdi/js';
 import Plot from 'react-plotly.js';
 import ImageSlider from '@/Components/ImageSlider';
+import { BarChart } from '@mui/x-charts';
 
 export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }) {
 
@@ -64,9 +64,14 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                     </div>
 
                     <div>
-                        <a href='#seccionDatos'>
+                        <button
+                            className='p-2 bg-blue-600 text-white rounded-lg'
+                            onClick={() =>
+                                document.getElementById("seccionDatos").scrollIntoView({ behavior: "smooth" })
+                            }
+                        >
                             Ver datos de la estación
-                        </a>
+                        </button>
                     </div>
                 </div>
             );
@@ -103,7 +108,42 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
         if (estacion !== null) {
             return (
                 <div id='seccionDatos' className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    Datos de la estación
+                    <div className='flex flex-col md:flex-row'>
+                        <div className='m-2 border-2'>
+                            <BarChart
+                                xAxis={[
+                                    {
+                                        id: 'barCategories',
+                                        data: ['bar A', 'bar B', 'bar C'],
+                                        scaleType: 'band',
+                                    },
+                                ]}
+                                series={[
+                                    {
+                                        data: [2, 5, 3],
+                                    },
+                                ]}
+                                width={400}
+                                height={300}
+                            />
+                        </div>
+
+                        <div className='m-2 border-2'>
+                            <Plot
+                                data={[
+                                    {
+                                        x: [1, 2, 3],
+                                        y: [2, 6, 3],
+                                        type: 'scatter',
+                                        mode: 'lines+markers',
+                                        marker: { color: 'red' },
+                                    },
+                                    { type: 'bar', x: [1, 2, 3], y: [2, 5, 3] },
+                                ]}
+                                layout={{ width: 600, height: 500, title: 'A Fancy Plot' }}
+                            />
+                        </div>
+                    </div>
                 </div>
             );
         }
