@@ -17,7 +17,7 @@ class EstacionController extends Controller
     {
         $estacionesMap = DB::table('estaciones')->get();
         $estacion = DB::table('estaciones')->where('indice', $codigo)->first();
-        $data = DB::table('data')->where('indice', $codigo)->whereBetween('fecha', ['2021-01-01', '2022-12-31'])->get();
+        $data = DB::table('data')->where('indice', $codigo)->whereBetween('fecha', ['2021-01-01', '2021-12-31'])->orderBy('fecha', 'desc')->take(7)->get();
         $fotos = DB::table('fotos')->where('indice', $codigo)->orderBy('id')->get('name');
 
         return Inertia::render('Dashboard', [

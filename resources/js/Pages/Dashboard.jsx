@@ -8,7 +8,6 @@ import Icon from '@mdi/react';
 import { mdiInformationOutline, mdiMapSearchOutline, mdiOpenInNew } from '@mdi/js';
 import Plot from 'react-plotly.js';
 import ImageSlider from '@/Components/ImageSlider';
-import { BarChart } from '@mui/x-charts';
 
 export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }) {
 
@@ -103,44 +102,73 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
         }
     }
 
-    //mostrando los datos completos de la estacion
+    //mostrando los datos completos de la estacion (graphs)
     function estacionDatos(estacion) {
         if (estacion !== null) {
+
+            //datos para el gráfico, temperaturas
+            var fechas = [];
+            var tmax = [];
+            var tmin = [];
+            var ts = [];
+            Object.keys(data).forEach(key =>{
+                fechas.push(data[key].fecha);
+                tmax.push(data[key].tmax);
+                tmin.push(data[key].tmin);
+                ts.push(data[key].ts);
+            });
+
+            //configuracion del gráfico
+            const removeButtons = ['lasso2d', 'select2d','resetScale2d'];
+            const config = { 
+                displaylogo: false,
+                displayModeBar: true,
+                modeBarButtonsToRemove: removeButtons,
+            }
+
+            //colores
+            const colorHigh = 'rgb(255, 79, 51)';
+            const colorMed = 'rgb(255, 240, 51)';
+            const colorLow = 'rgb(51, 255, 193)';
+
+            //TODO continuar configurando el gráfico, y agregar los demas gráficos
             return (
                 <div id='seccionDatos' className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div className='flex flex-col md:flex-row'>
                         <div className='m-2 border-2'>
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'barCategories',
-                                        data: ['bar A', 'bar B', 'bar C'],
-                                        scaleType: 'band',
-                                    },
-                                ]}
-                                series={[
-                                    {
-                                        data: [2, 5, 3],
-                                    },
-                                ]}
-                                width={400}
-                                height={300}
-                            />
-                        </div>
-
-                        <div className='m-2 border-2'>
                             <Plot
                                 data={[
                                     {
-                                        x: [1, 2, 3],
-                                        y: [2, 6, 3],
-                                        type: 'scatter',
-                                        mode: 'lines+markers',
-                                        marker: { color: 'red' },
+                                        x: fechas,
+                                        y: tmax,
+                                        name: 'máxima',
+                                        type: 'bar',
+                                        marker: { color: colorHigh },
                                     },
-                                    { type: 'bar', x: [1, 2, 3], y: [2, 5, 3] },
+                                    {
+                                        x: fechas,
+                                        y: ts,
+                                        name: 'media',
+                                        type: 'bar',
+                                        marker: { color: colorMed },
+                                    },
+                                    {
+                                        x: fechas,
+                                        y: tmin,
+                                        name: 'mínima',
+                                        type: 'bar',
+                                        marker: { color: colorLow },
+                                    },
                                 ]}
-                                layout={{ width: 600, height: 500, title: 'A Fancy Plot' }}
+                                layout={{
+                                    title: 'Temperaturas',
+                                    barmode: 'group',
+                                    autosize: true,
+                                    legend: {orientation: 'h' },
+                                    xaxis: {title: 'fecha'},
+                                    yaxis: {title: 'Temperatura °C'},
+                                }}
+                                config={config}
                             />
                         </div>
                     </div>
