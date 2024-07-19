@@ -15,6 +15,7 @@ export default function ImageSlider({ images }) {
   return (
     <div id="slider" className="flex flex-row overflow-x-scroll overflow-y-hidden snap-x snap-mandatory">
       <button
+        title="Anterior"
         className="sticky left-0 sm:hover:bg-gray-100"
         onClick={(e) => {
           e.preventDefault();
@@ -31,6 +32,7 @@ export default function ImageSlider({ images }) {
         );
       })}
       <button
+        title="Siguiente"
         className="sticky right-0 sm:hover:bg-gray-100"
         onClick={(e) => {
           e.preventDefault();
