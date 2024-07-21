@@ -53,8 +53,11 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
             var ultimoTmin = data[0].tmin;
             var ultimoTs = data[0].ts;
             var ultimoHr = data[0].hr;
+            var diaTs = [data[0].ts07, data[0].ts14, data[0].ts21];
+            var diaHr = [data[0].hr07, data[0].hr14, data[0].hr21];
 
-            var f = new Date(data[0].fecha);
+            var ftxt = data[0].fecha.split("-");
+            var f = new Date(ftxt[0], ftxt[1], ftxt[2]);
             var dateFormat = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             var ultimaFecha = f.toLocaleDateString("es", dateFormat);
 
@@ -97,39 +100,74 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
             }
 
             //gráfico evolucion de temperatura media durante el dia
-            //TODO fix this graph it
             function tsDia() {
+                const mh = 50;
+                const mv = 25;
+                const removeButtonsSmall = ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d', 'toImage'];
                 return (
                     <Plot
-                        className='m-2 overflow-hidden rounded-lg w-1/2 h-20 content-center'
+                        className='overflow-hidden sm:w-1/2 w-full content-center'
                         data={[
                             {
                                 x: ['7:00 am', '2:00 pm', '9:00 pm'],
-                                y: [14.2, 19.4, 15.2],
+                                y: diaTs,
                                 name: 'temperatura',
                                 type: 'scatter',
+                                line: { shape: 'spline', color: 'black' },
                                 mode: 'lines+markers',
+                                hoverinfo: 'y',
                             },
-                            {
-                                x: ['7:00 am', '2:00 pm', '9:00 pm'],
-                                y: [14.2, 19.4, 15.2],
-                                type: 'bar',
-                            }
                         ]}
                         layout={{
+                            font: { size: 10 },
                             title: 'Temperatura durante el día',
-                            autosize: true,
-                            xaxis: { title: 'Hora', size: 1},
-                            yaxis: { title: 'Temperatura °C' },
+                            yaxis: { title: '°C' },
+                            margin: { t: mv, r: mh, b: mv, l: mh },
+                            height: 120,
+                            paper_bgcolor: 'rgb(243 244 246)',
+                            plot_bgcolor: 'rgb(243 244 246)',
                         }}
-                        config={{staticPlot: true}}
+                        config={{ displaylogo: false, modeBarButtonsToRemove: removeButtonsSmall }}
+                    />
+                );
+            }
+
+            //gráfico evolucion de la humedad media durante el dia
+            function hrDia() {
+                const mh = 50;
+                const mv = 25;
+                const removeButtonsSmall = ['zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d', 'toImage'];
+                return (
+                    <Plot
+                        className='overflow-hidden sm:w-1/2 w-full content-center'
+                        data={[
+                            {
+                                x: ['7:00 am', '2:00 pm', '9:00 pm'],
+                                y: diaHr,
+                                name: 'Humedad media',
+                                type: 'scatter',
+                                line: { shape: 'spline', color: 'black' },
+                                mode: 'lines+markers',
+                                hoverinfo: 'y',
+                            },
+                        ]}
+                        layout={{
+                            font: { size: 10 },
+                            title: 'Humedad media durante el día',
+                            yaxis: { title: '%' },
+                            margin: { t: mv, r: mh, b: mv, l: mh },
+                            height: 120,
+                            paper_bgcolor: 'rgb(243 244 246)',
+                            plot_bgcolor: 'rgb(243 244 246)',
+                        }}
+                        config={{ displaylogo: false, modeBarButtonsToRemove: removeButtonsSmall }}
                     />
                 );
             }
 
             return (
                 //Nombre de la estación y descripción
-                <div className='p-4 grid grid-cols-1 gap-2'>
+                <div className='p-4 grid grid-cols-1 gap-3'>
                     <div className='text-xl font-semibold border-b-2'>
                         Estación {estacion.indice}: {estacion.nombre}
                     </div>
@@ -137,8 +175,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                     {
                         //Datos generales (tabla)
                     }
-                    <div>Datos generales:</div>
-                    <div className='pl-2 pr-2 bg-gray-100 rounded-lg text-sm'>
+                    <div className='p-2 bg-gray-100 rounded-lg text-sm'>
                         <table className='table-auto'>
                             <tbody>
                                 <tr className='border-b-2'>
@@ -163,7 +200,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                     {
                         //Resumen de datos relevantes (temperatura, humedad, indice de calor)
                     }
-                    <div className='p-1 bg-gray-100 rounded-lg text-sm flex flex-col gap-1'>
+                    <div className='p-2 bg-gray-100 rounded-lg text-sm flex flex-col gap-1'>
                         <div>Datos del día {ultimaFecha + ' (últimos datos encontrados)'}</div>
 
                         <div className='flex flex-row gap-4'>
@@ -187,7 +224,10 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                                 Humedad: {ultimoHr + ' %'}
                             </div>
                         </div>
-                        {tsDia()}
+                        <div className='pt-2 flex flex-col sm:flex-row overflow-hidden border-t-2'>
+                            {tsDia()}
+                            {hrDia()}
+                        </div>
                     </div>
 
                     {
@@ -221,7 +261,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
         }
 
         return (
-            <div className='bg-gray-200 flex flex-col justify-center place-items-center h-96 hover:bg-gray-300'>
+            <div className='bg-gray-200 flex flex-col justify-center place-items-center h-[26rem] hover:bg-gray-300'>
                 <Icon path={mdiMapSearchOutline} size={3} />
                 <div></div>
                 <div className='mt-8 flex'>
@@ -321,7 +361,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
                         <div className='gap-0 columns-1 md:columns-2'>
-                            <MapContainer center={[13.8007, -88.8052]} zoom={8} scrollWheelZoom={true} className='h-96'>
+                            <MapContainer center={[13.8007, -88.8052]} zoom={8} scrollWheelZoom={true} className='h-[26rem]'>
                                 <TileLayer
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
