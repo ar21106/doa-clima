@@ -11,24 +11,48 @@ import Plot from 'react-plotly.js';
 import ImageSlider from '@/Components/ImageSlider';
 
 export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }) {
-    // *** DATOS GENERALES PARA LOS GRÁFICOS ***
-    const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
-    const config = {
-        displaylogo: false,
-        modeBarButtonsToRemove: removeButtons,
-    }
 
-    const colorHigh = 'red';
-    const colorMed = 'LimeGreen';
-    const colorLow = 'Aquamarine';
-    // *** DATOS GENERALES PARA LOS GRÁFICOS ***
+    //sacando los datos como arrays para los gráficos
+    if (estacion !== null) {
+        //arrays
+        var fechas = [];
+        var ts07 = [];
+        var ts14 = [];
+        var ts21 = [];
+        var ts = [];
+        var th07 = [];
+        var th14 = [];
+        var th21 = [];
+        var th = [];
+        var hr07 = [];
+        var hr14 = [];
+        var hr21 = [];
+        var hr = [];
+
+        //sacando info de los datos para agregarlos a los arrays
+        Object.keys(data).forEach(key => {
+            fechas.push(data[key].fecha);
+            ts07.push(data[key].ts07);
+            ts14.push(data[key].ts14);
+            ts21.push(data[key].ts21);
+            ts.push(data[key].ts);
+            th07.push(data[key].th07);
+            th14.push(data[key].th14);
+            th21.push(data[key].th21);
+            th.push(data[key].th);
+            hr07.push(data[key].hr07);
+            hr14.push(data[key].hr14);
+            hr21.push(data[key].hr21);
+            hr.push(data[key].hr);
+        });
+    }
 
     function mostrarDivTrigger(id) {
         var div = document.getElementById(id);
         div.style.display = div.style.display == 'block' ? 'none' : 'block';
     }
 
-    function mostrarDiv(id) { document.getElementById(id).style.display = 'block'; }
+    function mostrarDivs(item) { document.getElementById(item).style.display = 'block'; }
 
     //poniendo los pines en el mapa para las estaciones
     let estacionesMarker = estacionesMap.map(function (estacion) {
@@ -166,8 +190,8 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
             }
 
             return (
-                //Nombre de la estación y descripción
-                <div className='p-4 grid grid-cols-1 gap-3'>
+                //Nombre de la estación
+                <div className='p-4 grid grid-cols-1 gap-3 h-[26rem]'>
                     <div className='text-xl font-semibold border-b-2'>
                         Estación {estacion.indice}: {estacion.nombre}
                     </div>
@@ -237,7 +261,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                         <button
                             className='p-2 bg-blue-600 hover:bg-blue-800 text-white rounded-lg flex flex-row text-sm'
                             onClick={() => {
-                                mostrarDiv('temperatura');
+                                ['Temperatura', 'Humedad Relativa'].forEach(mostrarDivs);
                                 document.getElementById("seccionDatos").scrollIntoView({ behavior: "smooth" })
                             }}
                         >
@@ -247,7 +271,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                         <button
                             className='p-2 bg-blue-600 hover:bg-blue-800 text-white rounded-lg flex flex-row text-sm'
                             onClick={() => {
-                                mostrarDiv('fotos');
+                                ['fotos'].forEach(mostrarDivs);
                                 document.getElementById("seccionFotos").scrollIntoView({ behavior: "smooth" })
                             }}
                         >
@@ -274,77 +298,144 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     //mostrando las fotos de la estacion
     function estacionFotos(estacion) {
         if (estacion !== null) {
-            return (
-                <div className='mx-auto mt-4'>
-                    <div className='p-2 m-4 flex flex-row rounded-lg max-w-max bg-green-100'>
-                        <Icon className='mr-2 place-self-center' path={mdiInformationOutline} size={0.7} />
-                        Haz clic en las fotos para verlas en tamaño completo
+            return (<>
+                <div id='seccionFotos' className='relative -top-16' />
+                <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <button onClick={(e) => { mostrarDivTrigger('fotos') }}>
+                        <div className='m-2 flex flex-row'>
+                            Fotografías de esta estación
+                            <Icon path={mdiChevronLeft} rotate={90} vertical size={1} />
+                        </div>
+                    </button>
+                    <div className='border-t-2 border-dashed' id='fotos' style={{ display: 'none' }}>
+                        <div className='mx-auto mt-4'>
+                            <div className='p-2 m-4 flex flex-row rounded-lg max-w-max bg-green-100'>
+                                <Icon className='mr-2 place-self-center' path={mdiInformationOutline} size={0.7} />
+                                Haz clic en las fotos para verlas en tamaño completo
+                            </div>
+                            <ImageSlider
+                                images={fotos}
+                            />
+                        </div>
                     </div>
-                    <ImageSlider
-                        images={fotos}
-                    />
                 </div>
-            );
+            </>);
         }
-        //TODO mostrar algo cuando no haya estación seleccionada
     }
 
-    //graficos de medicion de la temperatura en la estacion seleccionada
-    function estacionTemperaturas(estacion) {
+    //datos encabezado
+    function datosEncabezado(estacion) {
+        if (estacion !== null) {
+            return (<>
+                <div id='seccionDatos' className='relative -top-16' />
+                <div className='mt-4 text-center font-semibold'>
+                    --- DATOS RECOLECTADOS POR LA ESTACIÓN ---
+                </div>
+                    <div className='m-1 p-1 flex flex-row gap-2 mx-auto rounded-lg w-fit bg-yellow-100'>
+                        <Icon className='place-self-center' path={mdiInformationOutline} size={0.7}/>
+                        Se muestran los datos de los últimos 7 días
+                    </div>
+            </>);
+        }
+    }
+
+    //seccion de datos
+    function seccionDatos(estacion, titulo, medida) {
         if (estacion !== null) {
 
-            //temperaturas
-            var fechas = [];
-            var tmax = [];
-            var tmin = [];
-            var ts = [];
-            Object.keys(data).forEach(key => {
-                fechas.push(data[key].fecha);
-                tmax.push(data[key].tmax);
-                tmin.push(data[key].tmin);
-                ts.push(data[key].ts);
-            });
+            function grafico() {
+                switch (medida) {
+                    case "temperatura":
+                        return (
+                            <div className='flex flex-col md:flex-row place-content-center'>
+                                {grafico1("Temperatura °C", "°C", ts07, ts14, ts21, ts)}
+                                {grafico1("Temperatura Húmeda °C", "°C", th07, th14, th21, th)}
+                            </div>
+                        )
+                    case "humedad":
+                        return grafico1("Humedad Relativa %", "%", hr07, hr14, hr21, hr);
+                    default:
+                        break;
+                }
+            }
 
             return (
-                <div className='flex flex-col md:flex-row'>
-                    <Plot
-                        className='m-2 overflow-hidden rounded-lg w-1/2 content-center'
-                        data={[
-                            {
-                                x: fechas,
-                                y: tmax,
-                                name: 'máxima',
-                                type: 'bar',
-                                marker: { color: colorHigh },
-                            },
-                            {
-                                x: fechas,
-                                y: ts,
-                                name: 'media',
-                                type: 'bar',
-                                marker: { color: colorMed },
-                            },
-                            {
-                                x: fechas,
-                                y: tmin,
-                                name: 'mínima',
-                                type: 'bar',
-                                marker: { color: colorLow },
-                            },
-                        ]}
-                        layout={{
-                            title: 'Temperatura °C',
-                            barmode: 'group',
-                            autosize: true,
-                            xaxis: { title: 'fecha' },
-                            yaxis: { title: 'Temperatura °C' },
-                        }}
-                        config={config}
-                    />
+                <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <button onClick={(e) => { mostrarDivTrigger(titulo) }}>
+                        <div className='m-2 flex flex-row'>
+                            {titulo}
+                            <Icon path={mdiChevronLeft} rotate={90} vertical size={1} />
+                        </div>
+                    </button>
+                    <div className='border-t-2 border-dashed' id={titulo} style={{ display: 'block' }}>
+                        {grafico()}
+                    </div>
                 </div>
+
+
             );
         }
-        //TODO mostrar algo cuando no haya estación seleccionada
+    }
+
+    //gráfico 1: 3 barras para medidas 7am, 2pm y 9pm y linea para valor medio
+    function grafico1(titulo, variable, v07, v14, v21, media) {
+
+        //configuración
+        const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
+        const config = {
+            displaylogo: false,
+            modeBarButtonsToRemove: removeButtons,
+        }
+
+        return (
+            <div className='flex flex-col md:flex-row'>
+                <Plot
+                    className='overflow-hidden rounded-lg mx-auto max-w-sm sm:max-w-xl'
+                    data={[
+                        {
+                            x: fechas,
+                            y: v07,
+                            name: '7:00 am',
+                            type: 'bar',
+                            hoverinfo: 'y',
+                            marker: {color: 'yellow'}
+                        },
+                        {
+                            x: fechas,
+                            y: v14,
+                            name: '2:00 pm',
+                            type: 'bar',
+                            hoverinfo: 'y',
+                            marker: {color: 'orange'}
+                        },
+                        {
+                            x: fechas,
+                            y: v21,
+                            name: '9:00 pm',
+                            type: 'bar',
+                            hoverinfo: 'y',
+                            marker: {color: 'blue'}
+                        },
+                        {
+                            x: fechas,
+                            y: media,
+                            name: 'media',
+                            type: 'scatter',
+                            hoverinfo: 'y',
+                            line: { color: 'black', shape: 'spline' },
+                        },
+                    ]}
+                    layout={{
+                        title: titulo,
+                        barmode: 'group',
+                        autosize: true,
+                        xaxis: { title: 'fecha' },
+                        yaxis: { title: variable },
+                    }}
+                    config={config}
+                />
+            </div>
+        );
     }
 
     //TODO (Enviar MapContainer atrás, al hacer scroll pasa por encima del encabezado de la pagina)
@@ -360,7 +451,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
 
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 
-                        <div className='gap-0 columns-1 md:columns-2'>
+                        <div className='gap-0 columns-1 sm:columns-2'>
                             <MapContainer center={[13.8007, -88.8052]} zoom={8} scrollWheelZoom={true} className='h-[26rem]'>
                                 <TileLayer
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -374,34 +465,13 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                         </div>
                     </div>
 
-                    <div id='seccionFotos' className='relative -top-16' />
-                    <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <button onClick={(e) => { mostrarDivTrigger('fotos') }}>
-                            <div className='m-2 flex flex-row'>
-                                Fotografías de esta estación
-                                <Icon path={mdiChevronLeft} rotate={90} vertical size={1} />
-                            </div>
-                        </button>
-                        <div className='border-t-2 border-dashed' id='fotos' style={{ display: 'none' }}>
-                            {estacionFotos(estacion)}
-                        </div>
-                    </div>
+                    {estacionFotos(estacion)}
 
-                    <div id='seccionDatos' className='relative -top-16' />
-                    <div className='mt-4 text-center font-semibold'>
-                        --- DATOS RECOLECTADOS POR LA ESTACIÓN ---
-                    </div>
-                    <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <button onClick={(e) => { mostrarDivTrigger('temperatura') }}>
-                            <div className='m-2 flex flex-row'>
-                                Temperatura
-                                <Icon path={mdiChevronLeft} rotate={90} vertical size={1} />
-                            </div>
-                        </button>
-                        <div className='border-t-2 border-dashed' id='temperatura' style={{ display: 'block' }}>
-                            {estacionTemperaturas(estacion)}
-                        </div>
-                    </div>
+                    {datosEncabezado(estacion)}
+
+                    {seccionDatos(estacion, "Temperatura", "temperatura")}
+
+                    {seccionDatos(estacion, "Humedad Relativa", "humedad")}
 
                 </div>
             </div>
