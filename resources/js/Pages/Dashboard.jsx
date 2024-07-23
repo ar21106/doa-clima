@@ -16,18 +16,14 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     if (estacion !== null) {
         //arrays
         var fechas = [];
-        var ts07 = [];
-        var ts14 = [];
-        var ts21 = [];
-        var ts = [];
-        var th07 = [];
-        var th14 = [];
-        var th21 = [];
-        var th = [];
-        var hr07 = [];
-        var hr14 = [];
-        var hr21 = [];
-        var hr = [];
+        var ts07 = [], ts14 = [], ts21 = [], ts = [];
+        var th07 = [], th14 = [], th21 = [], th = [];
+        var hr07 = [], hr14 = [], hr21 = [], hr = [];
+        var pvp07 = [], pvp14 = [], pvp21 = [], pvp = [];
+        var p07 = [], p14 = [], p21 = [], pd = [];
+        var sa07 = [], sa14 = [], sa21 = [], sa = [];
+        var nub07 = [], nub14 = [], nub21 = [], nub = [];
+        var vis07 = [], vis14 = [], vis21 = [];
 
         //sacando info de los datos para agregarlos a los arrays
         Object.keys(data).forEach(key => {
@@ -36,14 +32,40 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
             ts14.push(data[key].ts14);
             ts21.push(data[key].ts21);
             ts.push(data[key].ts);
+
             th07.push(data[key].th07);
             th14.push(data[key].th14);
             th21.push(data[key].th21);
             th.push(data[key].th);
+
             hr07.push(data[key].hr07);
             hr14.push(data[key].hr14);
             hr21.push(data[key].hr21);
             hr.push(data[key].hr);
+
+            pvp07.push(data[key].pvp07);
+            pvp14.push(data[key].pvp14);
+            pvp21.push(data[key].pvp21);
+            pvp.push(data[key].pvp);
+
+            p07.push(data[key].p07);
+            p14.push(data[key].p14);
+            p21.push(data[key].p21);
+            pd.push(data[key].pd);
+
+            sa07.push(data[key].sa07);
+            sa14.push(data[key].sa14);
+            sa21.push(data[key].sa21);
+            sa.push(data[key].sa);
+
+            nub07.push(data[key].nub07);
+            nub14.push(data[key].nub14);
+            nub21.push(data[key].nub21);
+            nub.push(data[key].nub);
+
+            vis07.push(data[key].vis07);
+            vis14.push(data[key].vis14);
+            vis21.push(data[key].vis21);
         });
     }
 
@@ -246,6 +268,9 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                             <div className='flex flex-row'>
                                 <Icon path={mdiWaterPercent} size={0.8} color='DodgerBlue' />
                                 Humedad: {ultimoHr + ' %'}
+                                {
+                                    //TODO add context for the user about what the colors mean, about the heat index
+                                }
                             </div>
                         </div>
                         <div className='pt-2 flex flex-col sm:flex-row overflow-hidden border-t-2'>
@@ -261,7 +286,9 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                         <button
                             className='p-2 bg-blue-600 hover:bg-blue-800 text-white rounded-lg flex flex-row text-sm'
                             onClick={() => {
-                                ['Temperatura', 'Humedad Relativa'].forEach(mostrarDivs);
+                                [
+                                    "Temperatura", "Humedad Relativa", "Presion de vapor", "Precipitación", "Viento", "Nubosidad", "Visibilidad"
+                                ].forEach(mostrarDivs);
                                 document.getElementById("seccionDatos").scrollIntoView({ behavior: "smooth" })
                             }}
                         >
@@ -331,10 +358,10 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                 <div className='mt-4 text-center font-semibold'>
                     --- DATOS RECOLECTADOS POR LA ESTACIÓN ---
                 </div>
-                    <div className='m-1 p-1 flex flex-row gap-2 mx-auto rounded-lg w-fit bg-yellow-100'>
-                        <Icon className='place-self-center' path={mdiInformationOutline} size={0.7}/>
-                        Se muestran los datos de los últimos 7 días
-                    </div>
+                <div className='m-1 p-1 flex flex-row gap-2 mx-auto rounded-lg w-fit bg-yellow-100'>
+                    <Icon className='place-self-center' path={mdiInformationOutline} size={0.7} />
+                    Se muestran los datos de los últimos 7 días
+                </div>
             </>);
         }
     }
@@ -342,7 +369,6 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     //seccion de datos
     function seccionDatos(estacion, titulo, medida) {
         if (estacion !== null) {
-
             function grafico() {
                 switch (medida) {
                     case "temperatura":
@@ -354,11 +380,28 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                         )
                     case "humedad":
                         return grafico1("Humedad Relativa %", "%", hr07, hr14, hr21, hr);
+
+                    case "presion de vapor":
+                        return grafico1("Presión de vapor mmHg", "mmHg", pvp07, pvp14, pvp21, pvp);
+
+                    case "precipitacion":
+                        return grafico1("Precipitación mm", "mm", p07, p14, p21, pd);
+
+                    case "viento":
+                        return grafico1("Velocidad del viento (Beaufort)", "Beaufort", sa07, sa14, sa21, sa);
+
+                    case "nubosidad":
+                        return grafico1("Nubosidad", "Décimas", nub07, nub14, nub21, nub);
+
+                    case "visivilidad":
+                        return grafico1("Visibilidad", "Km", vis07, vis14, vis21, []);
+
                     default:
                         break;
                 }
             }
 
+            //TODO a button to access the more detailded
             return (
                 <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <button onClick={(e) => { mostrarDivTrigger(titulo) }}>
@@ -398,7 +441,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                             name: '7:00 am',
                             type: 'bar',
                             hoverinfo: 'y',
-                            marker: {color: 'yellow'}
+                            marker: { color: 'yellow' }
                         },
                         {
                             x: fechas,
@@ -406,7 +449,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                             name: '2:00 pm',
                             type: 'bar',
                             hoverinfo: 'y',
-                            marker: {color: 'orange'}
+                            marker: { color: 'orange' }
                         },
                         {
                             x: fechas,
@@ -414,7 +457,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                             name: '9:00 pm',
                             type: 'bar',
                             hoverinfo: 'y',
-                            marker: {color: 'blue'}
+                            marker: { color: 'blue' }
                         },
                         {
                             x: fechas,
@@ -472,6 +515,30 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                     {seccionDatos(estacion, "Temperatura", "temperatura")}
 
                     {seccionDatos(estacion, "Humedad Relativa", "humedad")}
+
+                    {seccionDatos(estacion, "Presion de vapor", "presion de vapor")}
+
+                    {
+                        //TODO this graph could probably look better in another style (currently using bars)
+                        //also, there could be the phenomenon variables here (fray	ftea	ftee	fgra	fchu)
+                        //(diferent presentation as those variables record the time of the day when the phenomenon happened)
+                        seccionDatos(estacion, "Precipitación", "precipitacion")
+                    }
+
+                    {
+                        //TODO this seccion could also have the wind direccion variables (rd07	rd14	rd21	rd)
+                        //diferent presentation as those variables record the direction of wind as a not numerical char (N, W, E, S, C)
+                        seccionDatos(estacion, "Viento", "viento")
+                    }
+
+                    {seccionDatos(estacion, "Nubosidad", "nubosidad")}
+
+                    {seccionDatos(estacion, "Visibilidad", "visivilidad")}
+
+                    {
+                        //TODO preguntar que significan las variables de estado de suelo y estado de rocio (es, er, erd)
+                        //que significa la medida 012 y .012, como se interpreta
+                    }
 
                 </div>
             </div>
