@@ -92,7 +92,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     });
 
     //mostrando los datos generales de la estacion elegida
-    function estacionDatosGenerales(estacion) {
+    function estacionDatosGenerales() {
         if (estacion !== null) {
             var wazeLink = "https://www.waze.com/en/live-map/directions?latlng=" + estacion.latitud + "%2C" + estacion.longitud;
             var ultimoTmax = data[0].tmax;
@@ -323,7 +323,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     }
 
     //mostrando las fotos de la estacion
-    function estacionFotos(estacion) {
+    function estacionFotos() {
         if (estacion !== null) {
             return (<>
                 <div id='seccionFotos' className='relative -top-16' />
@@ -351,7 +351,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     }
 
     //datos encabezado
-    function datosEncabezado(estacion) {
+    function datosEncabezado() {
         if (estacion !== null) {
             return (<>
                 <div id='seccionDatos' className='relative -top-16' />
@@ -367,7 +367,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     }
 
     //seccion de datos
-    function seccionDatos(estacion, titulo, medida) {
+    function seccionDatos(titulo, medida) {
         if (estacion !== null) {
             function grafico() {
                 switch (medida) {
@@ -503,37 +503,37 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                                 {estacionesMarker}
                             </MapContainer>
 
-                            {estacionDatosGenerales(estacion)}
+                            {estacionDatosGenerales()}
 
                         </div>
                     </div>
 
-                    {estacionFotos(estacion)}
+                    {estacionFotos()}
 
-                    {datosEncabezado(estacion)}
+                    {datosEncabezado()}
 
-                    {seccionDatos(estacion, "Temperatura", "temperatura")}
+                    {seccionDatos("Temperatura", "temperatura")}
 
-                    {seccionDatos(estacion, "Humedad Relativa", "humedad")}
+                    {seccionDatos("Humedad Relativa", "humedad")}
 
-                    {seccionDatos(estacion, "Presion de vapor", "presion de vapor")}
+                    {seccionDatos("Presion de vapor", "presion de vapor")}
 
                     {
                         //TODO this graph could probably look better in another style (currently using bars)
                         //also, there could be the phenomenon variables here (fray	ftea	ftee	fgra	fchu)
                         //(diferent presentation as those variables record the time of the day when the phenomenon happened)
-                        seccionDatos(estacion, "Precipitación", "precipitacion")
+                        seccionDatos("Precipitación", "precipitacion")
                     }
 
                     {
                         //TODO this seccion could also have the wind direccion variables (rd07	rd14	rd21	rd)
                         //diferent presentation as those variables record the direction of wind as a not numerical char (N, W, E, S, C)
-                        seccionDatos(estacion, "Viento", "viento")
+                        seccionDatos("Viento", "viento")
                     }
 
-                    {seccionDatos(estacion, "Nubosidad", "nubosidad")}
+                    {seccionDatos("Nubosidad", "nubosidad")}
 
-                    {seccionDatos(estacion, "Visibilidad", "visivilidad")}
+                    {seccionDatos("Visibilidad", "visivilidad")}
 
                     {
                         //TODO preguntar que significan las variables de estado de suelo y estado de rocio (es, er, erd)

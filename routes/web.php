@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EstacionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DataController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function(){
@@ -10,6 +11,12 @@ Route::get('/', function(){
 
 Route::get('/mapa/{indice?}', [EstacionController::class, 'index']
 )->name('dashboard');
+
+Route::get('datos', [DataController::class,'index'])
+->name('datos');
+
+Route::post('datos', [DataController::class,'filtro'])
+->name('filtro');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
