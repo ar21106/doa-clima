@@ -24,11 +24,14 @@ class DataController extends Controller
             'ts'
         ];
         $estaciones = DB::table('estaciones')->orderBy('indice')->get();
-        $datos = DB::table('data')->where('indice', 'A-31')->whereBetween('fecha', ['2021-01-01', '2022-12-31'])->orderBy('fecha', 'desc')->get($columnas);
+        $datos = DB::table('data')->where('indice', 'A-31')->whereBetween('fecha', ['2020-01-01', '2021-12-31'])->orderBy('fecha', 'desc')->get($columnas);
+        $estacionElegida = DB::table('estaciones')->where('indice', 'A-31')->first();
 
         return Inertia::render('Datos', [
             'estaciones' => $estaciones,
             'datos' => $datos,
+            'estacion' => $estacionElegida,
+            'variable' => 'Temperatura'
         ]);
     }
 
@@ -93,10 +96,13 @@ class DataController extends Controller
 
         $estaciones = DB::table('estaciones')->orderBy('indice')->get();
         $datos = DB::table('data')->where('indice', $estacion)->whereBetween('fecha', [$desde, $hasta])->orderBy('fecha', $orden)->get($columnas);
+        $estacionElegida = DB::table('estaciones')->where('indice', $estacion)->first();
 
         return Inertia::render('Datos', [
             'estaciones' => $estaciones,
             'datos' => $datos,
+            'estacion' => $estacionElegida,
+            'variable' => $variable
         ]);
     }
 }

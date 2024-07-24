@@ -6,17 +6,30 @@ import { useForm, Head } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import Icon from '@mdi/react';
 import Plot from 'react-plotly.js';
-import { mdiCloudQuestionOutline } from '@mdi/js';
+import { mdiCloudQuestionOutline, mdiInformationOutline } from '@mdi/js';
 
-export default function Datos({ auth, estaciones, datos }) {
+export default function Datos({ auth, estaciones, datos, estacion, variable }) {
     //sacando los datos como arrays para los gráficos
     if (Object.keys(datos).length !== 0) {
         //arrays
-        var fechas = [];
+        var x = {
+            0: [],
+            1: [],
+            2: [],
+            3: [],
+            4: [],
+            5: [],
+            6: []
+        }
+        var lineNames = Object.keys(datos[0]);
 
         //sacando info de los datos para agregarlos a los arrays
         Object.keys(datos).forEach(key => {
-            fechas.push(datos[key].fecha);
+            var count = 0;
+            Object.values(datos[key]).forEach(v => {
+                x[count].push(v);
+                count += 1;
+            })
         });
     }
 
@@ -108,11 +121,35 @@ export default function Datos({ auth, estaciones, datos }) {
         );
     }
 
-    function graficos(){}
+    function graficos() {
+        if (Object.keys(datos).length !== 0) {
+            function encabezado() {
+                return (<>
+                    <div className='font-semibold'>
+                        {'Estación ' + estacion.indice + ' - ' + estacion.nombre}
+                    </div>
+                    <div className='px-2 py-1 flex flex-row bg-green-100 max-w-fit rounded-lg text-sm'>
+                        <Icon className='place-self-center mr-1' path={mdiInformationOutline} size={0.7} />
+                        Los sufijos 07, 14, 21, hacen referencia a la hora del dia
+                    </div>
+                </>);
+            }
+            switch (variable) {
+                case 'Temperatura':
+                    return (<>
+                        {encabezado()}
+                        {grafico1("Temperatura °C", "°C")}
+                    </>)
+
+                default:
+                    break;
+            }
+        }
+    }
 
     //gráfico 1: lineas 1 variable a traves del tiempo
     //TODO finish this graph
-    function grafico1(titulo, variable, v) {
+    function grafico1(titulo, variable) {
 
         //configuración
         const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
@@ -127,17 +164,50 @@ export default function Datos({ auth, estaciones, datos }) {
                     className='overflow-hidden rounded-lg mx-auto max-w-sm sm:max-w-xl'
                     data={[
                         {
-                            x: fechas,
-                            y: v,
-                            name: 'media',
+                            x: x[0],
+                            y: x[1],
+                            name: lineNames[1],
                             type: 'scatter',
                             hoverinfo: 'y',
-                            line: { color: 'black', shape: 'spline' },
+                        },
+                        {
+                            x: x[0],
+                            y: x[2],
+                            name: lineNames[2],
+                            type: 'scatter',
+                            hoverinfo: 'y',
+                        },
+                        {
+                            x: x[0],
+                            y: x[3],
+                            name: lineNames[3],
+                            type: 'scatter',
+                            hoverinfo: 'y',
+                        },
+                        {
+                            x: x[0],
+                            y: x[4],
+                            name: lineNames[4],
+                            type: 'scatter',
+                            hoverinfo: 'y',
+                        },
+                        {
+                            x: x[0],
+                            y: x[5],
+                            name: lineNames[5],
+                            type: 'scatter',
+                            hoverinfo: 'y',
+                        },
+                        {
+                            x: x[0],
+                            y: x[6],
+                            name: lineNames[6],
+                            type: 'scatter',
+                            hoverinfo: 'y',
                         },
                     ]}
                     layout={{
                         title: titulo,
-                        barmode: 'group',
                         autosize: true,
                         xaxis: { title: 'fecha' },
                         yaxis: { title: variable },
@@ -241,7 +311,7 @@ export default function Datos({ auth, estaciones, datos }) {
                             </div>
 
                             <div className='m-4'>
-                                Graficos
+                                {graficos()}
                             </div>
                         </div>
                     </div>
