@@ -12,7 +12,7 @@ Route::get('/', function(){
 Route::get('/mapa/{indice?}', [EstacionController::class, 'index']
 )->name('dashboard');
 
-Route::get('datos', [DataController::class,'index'])
+Route::get('datos/{variable?}', [DataController::class,'index'])
 ->name('datos');
 
 Route::post('datos', [DataController::class,'filtro'])

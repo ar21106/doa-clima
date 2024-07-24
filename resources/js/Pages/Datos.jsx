@@ -58,6 +58,8 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
             <option key="Dirección del viento" value="Dirección del viento">Dirección del viento</option>
             <option key="Nubosidad" value="Nubosidad">Nubosidad</option>
             <option key="Visibilidad" value="Visibilidad">Visibilidad</option>
+            <option key="Estado del suelo" value="Estado del suelo">Estado del suelo</option>
+            <option key="Estado del rocio" value="Estado del rocio">Estado del rocío</option>
         </>);
     }
 
@@ -139,7 +141,65 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                     return (<>
                         {encabezado()}
                         {grafico1("Temperatura °C", "°C")}
-                    </>)
+                    </>);
+
+                case 'Temperatura Humeda':
+                    return (<>
+                        {encabezado()}
+                        {grafico1("Temperatura Humeda °C", "°C")}
+                    </>);
+
+                case 'Humedad relativa':
+                    return (<>
+                        {encabezado()}
+                        {grafico1("Humedad relativa %", "%")}
+                    </>);
+
+                case 'Presión de vapor':
+                    return (<>
+                        {encabezado()}
+                        {grafico1("Presión de vapor mmHg", "mmHg")}
+                    </>);
+
+                case 'Precipitación':
+                    return (<>
+                        {encabezado()}
+                        {grafico1("Precipitación mm", "mm")}
+                    </>);
+
+                case 'Fenómenos':
+                    return (<>
+                        {encabezado()}
+                        {
+                            //TODO
+                        }
+                    </>);
+
+                case 'Velocidad del viento':
+                    return (<>
+                        {encabezado()}
+                        {grafico1("Velocidad del viento (Beaufort)", "Beaufort")}
+                    </>);
+
+                case 'Dirección del viento':
+                    return (<>
+                        {encabezado()}
+                        {
+                            //TODO
+                        }
+                    </>);
+
+                case 'Nubosidad':
+                    return (<>
+                        {encabezado()}
+                        {grafico1("Nubosidad (Décimas)", "Décimas")}
+                    </>);
+
+                case 'Visibilidad':
+                    return (<>
+                        {encabezado()}
+                        {grafico1("Visibilidad Km", "Km")}
+                    </>);
 
                 default:
                     break;
@@ -262,6 +322,8 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                                 <TextInput
                                     className='text-sm'
                                     type='date'
+                                    min='2018-01-01'
+                                    max='2021-12-31'
                                     id='fechaDesde'
                                     name='fechaDesde'
                                     onChange={(e) => setData('fechaDesde', e.target.value)}
@@ -275,6 +337,8 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                                 <TextInput
                                     className='text-sm'
                                     type='date'
+                                    min='2018-01-01'
+                                    max='2021-12-31'
                                     id='fechaHasta'
                                     name='fechaHasta'
                                     onChange={(e) => setData('fechaHasta', e.target.value)}

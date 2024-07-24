@@ -46,9 +46,7 @@ return new class extends Migration
             $table->double('pd')->nullable();
 
             $table->time('fray')->nullable();
-
-            $table->double('ftea')->nullable();
-
+            $table->time('ftea')->nullable();
             $table->time('ftee')->nullable();
             $table->time('fgra')->nullable();
             $table->time('fchu')->nullable();
@@ -77,12 +75,11 @@ return new class extends Migration
             $table->double('vis14')->nullable();
             $table->double('vis21')->nullable();
 
-            $table->integer('es07')->nullable();
-            $table->integer('es14')->nullable();
-            $table->integer('es21')->nullable();
-
-            $table->integer('er07')->nullable();
-            $table->integer('er21')->nullable();
+            $table->string('es07')->nullable();
+            $table->string('es14')->nullable();
+            $table->string('es21')->nullable();
+            $table->string('er07')->nullable();
+            $table->string('er21')->nullable();
 
             $table->string('pa07')->nullable();
             $table->string('pa14')->nullable();
@@ -111,7 +108,7 @@ return new class extends Migration
 
             $table->string('codcaptura');
             $table->double('tosc')->nullable();
-            $table->integer('erd')->nullable();
+            $table->string('erd')->nullable();
         });
     }
 

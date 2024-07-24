@@ -24,6 +24,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
         var sa07 = [], sa14 = [], sa21 = [], sa = [];
         var nub07 = [], nub14 = [], nub21 = [], nub = [];
         var vis07 = [], vis14 = [], vis21 = [];
+        var fray = [], ftea = [], ftee = [], fgra = [], fchu = [];
 
         //sacando info de los datos para agregarlos a los arrays
         Object.keys(data).forEach(key => {
@@ -66,6 +67,12 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
             vis07.push(data[key].vis07);
             vis14.push(data[key].vis14);
             vis21.push(data[key].vis21);
+
+            fray.push(data[key].fray);
+            ftea.push(data[key].ftea);
+            ftee.push(data[key].ftee);
+            fgra.push(data[key].fgra);
+            fchu.push(data[key].fchu);
         });
     }
 
@@ -121,6 +128,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
 
                 T = (T * (9 / 5)) + 32;
                 var index = c1 + (c2 * T) + (c3 * R) + (c4 * T * R) + (c5 * (T * T)) + (c6 * (R * R)) + (c7 * (T * T) * R) + (c8 * T * (R * R)) + (c9 * (T * T) * (R * R));
+
                 return index;
             }
 
@@ -128,7 +136,11 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
             function heatIcon(ts, hr) {
                 var hi = heatIndex(ts, hr);
 
-                if (hi >= 80 && hi <= 90) {
+                if (hi < 80) {
+                    //normal green
+                    return <Icon title='Temperatura: Aceptable' path={mdiThermometerCheck} size={0.8} color='LimeGreen' />;
+
+                } else if (hi <= 90) {
                     //caution yellow
                     return <Icon title='Temperatura: Precaución' path={mdiThermometer} size={0.8} color='gold' />;
                 } else if (hi <= 103) {
@@ -141,8 +153,6 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                     //extreme danger red
                     return <Icon title='Temperatura: Peligro Extremo' path={mdiThermometerAlert} size={0.8} color='Red' />;
                 }
-                //normal green
-                return <Icon title='Temperatura: Aceptable' path={mdiThermometerCheck} size={0.8} color='Lime' />;
             }
 
             //gráfico evolucion de temperatura media durante el dia
@@ -235,7 +245,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                                         <br></br>
                                         <a className='text-blue-600 flex flex-row' href={wazeLink} target='_blank'>
                                             Cómo llegar &#40;Waze.com&#41;
-                                            <Icon title='abrir en Waze.com' path={mdiOpenInNew} size={0.6} />
+                                            <Icon className='ml-1' title='abrir en Waze.com' path={mdiOpenInNew} size={0.6} />
                                         </a>
                                     </td>
                                 </tr>
@@ -268,9 +278,10 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                             <div className='flex flex-row'>
                                 <Icon path={mdiWaterPercent} size={0.8} color='DodgerBlue' />
                                 Humedad: {ultimoHr + ' %'}
-                                {
-                                    //TODO add context for the user about what the colors mean, about the heat index
-                                }
+                                <a className='mx-4 text-blue-600 flex flex-row' href='https://www.isglobal.org/es/heat-index-calculator' target='_blank'>
+                                    Saber más
+                                    <Icon className='ml-1' title='Saber más sobre el indice de calor' path={mdiOpenInNew} size={0.6} />
+                                </a>
                             </div>
                         </div>
                         <div className='pt-2 flex flex-col sm:flex-row overflow-hidden border-t-2'>
@@ -369,9 +380,11 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     //seccion de datos
     function seccionDatos(titulo, medida) {
         if (estacion !== null) {
+            var route = "/datos";
             function grafico() {
                 switch (medida) {
                     case "temperatura":
+                        route = "/datos/Temperatura";
                         return (
                             <div className='flex flex-col md:flex-row place-content-center'>
                                 {grafico1("Temperatura °C", "°C", ts07, ts14, ts21, ts)}
@@ -379,21 +392,32 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                             </div>
                         )
                     case "humedad":
+                        route = "/datos/Humedad relativa";
                         return grafico1("Humedad Relativa %", "%", hr07, hr14, hr21, hr);
 
                     case "presion de vapor":
+                        route = "/datos/Presión de vapor";
                         return grafico1("Presión de vapor mmHg", "mmHg", pvp07, pvp14, pvp21, pvp);
 
                     case "precipitacion":
-                        return grafico1("Precipitación mm", "mm", p07, p14, p21, pd);
+                        route = "/datos/Precipitación";
+                        return (
+                            <div className='flex flex-col md:flex-row place-content-center'>
+                                {grafico1("Precipitación mm", "mm", p07, p14, p21, pd)}
+                                {grafico2()}
+                            </div>
+                        );
 
                     case "viento":
+                        route = "/datos/Velocidad del viento";
                         return grafico1("Velocidad del viento (Beaufort)", "Beaufort", sa07, sa14, sa21, sa);
 
                     case "nubosidad":
+                        route = "/datos/Nubosidad";
                         return grafico1("Nubosidad", "Décimas", nub07, nub14, nub21, nub);
 
                     case "visivilidad":
+                        route = "/datos/Visibilidad";
                         return grafico1("Visibilidad", "Km", vis07, vis14, vis21, []);
 
                     default:
@@ -401,7 +425,6 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                 }
             }
 
-            //TODO a button to access the more detailded
             return (
                 <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <button onClick={(e) => { mostrarDivTrigger(titulo) }}>
@@ -412,6 +435,10 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                     </button>
                     <div className='border-t-2 border-dashed' id={titulo} style={{ display: 'block' }}>
                         {grafico()}
+                        <a href={route} className='mx-2 my-1 text-blue-600 flex flex-row place-content-end'>
+                            Consultar datos completos
+                            <Icon path={mdiChevronLeft} horizontal size={1}/>
+                        </a>
                     </div>
                 </div>
 
@@ -433,14 +460,13 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
         return (
             <div className='flex flex-col md:flex-row'>
                 <Plot
-                    className='overflow-hidden rounded-lg mx-auto max-w-sm sm:max-w-xl'
+                    className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
                     data={[
                         {
                             x: fechas,
                             y: v07,
                             name: '7:00 am',
                             type: 'bar',
-                            hoverinfo: 'y',
                             marker: { color: 'yellow' }
                         },
                         {
@@ -448,7 +474,6 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                             y: v14,
                             name: '2:00 pm',
                             type: 'bar',
-                            hoverinfo: 'y',
                             marker: { color: 'orange' }
                         },
                         {
@@ -456,7 +481,6 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                             y: v21,
                             name: '9:00 pm',
                             type: 'bar',
-                            hoverinfo: 'y',
                             marker: { color: 'blue' }
                         },
                         {
@@ -464,7 +488,6 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                             y: media,
                             name: 'media',
                             type: 'scatter',
-                            hoverinfo: 'y',
                             line: { color: 'black', shape: 'spline' },
                         },
                     ]}
@@ -481,7 +504,74 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
         );
     }
 
-    //TODO (Enviar MapContainer atrás, al hacer scroll pasa por encima del encabezado de la pagina)
+    //grafico 2: exclusivo para fenomenos
+    function grafico2() {
+        //configuración
+        const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
+        const config = {
+            displaylogo: false,
+            modeBarButtonsToRemove: removeButtons,
+        }
+
+        return (
+            <div className='flex flex-col md:flex-row'>
+                <Plot
+                    className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
+                    data={[
+                        {
+                            x: fechas,
+                            y: fray,
+                            name: 'Rayo',
+                            type: 'scatter',
+                            mode: 'markers',
+                            line: { color: 'gold' }
+
+                        },
+                        {
+                            x: fechas,
+                            y: ftea,
+                            name: 'Tormenta alrededores',
+                            type: 'scatter',
+                            mode: 'markers',
+                            line: { color: 'skyblue' }
+                        },
+                        {
+                            x: fechas,
+                            y: ftee,
+                            name: 'Tormenta',
+                            type: 'scatter',
+                            mode: 'markers',
+                            line: { color: 'black' }
+                        },
+                        {
+                            x: fechas,
+                            y: fgra,
+                            name: 'Granizo',
+                            type: 'scatter',
+                            mode: 'markers',
+                            line: { color: 'Aqua' }
+                        },
+                        {
+                            x: fechas,
+                            y: fchu,
+                            name: 'Chubasco',
+                            type: 'scatter',
+                            mode: 'markers',
+                            line: { color: 'blue' }
+                        },
+                    ]}
+                    layout={{
+                        title: 'Fenómenos detectados',
+                        autosize: true,
+                        xaxis: { title: 'fecha' },
+                        yaxis: { title: 'Hora', categoryorder: 'category ascending' },
+                    }}
+                    config={config}
+                />
+            </div>
+        );
+    }
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -518,12 +608,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
 
                     {seccionDatos("Presion de vapor", "presion de vapor")}
 
-                    {
-                        //TODO this graph could probably look better in another style (currently using bars)
-                        //also, there could be the phenomenon variables here (fray	ftea	ftee	fgra	fchu)
-                        //(diferent presentation as those variables record the time of the day when the phenomenon happened)
-                        seccionDatos("Precipitación", "precipitacion")
-                    }
+                    {seccionDatos("Precipitación y fenómenos detectados", "precipitacion")}
 
                     {
                         //TODO this seccion could also have the wind direccion variables (rd07	rd14	rd21	rd)
