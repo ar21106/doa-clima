@@ -6,7 +6,7 @@ import { useForm, Head } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import Icon from '@mdi/react';
 import Plot from 'react-plotly.js';
-import { mdiCloudQuestionOutline, mdiInformationOutline } from '@mdi/js';
+import { mdiCloudQuestionOutline, mdiDownload, mdiInformationOutline } from '@mdi/js';
 
 export default function Datos({ auth, estaciones, datos, estacion, variable }) {
     //sacando los datos como arrays para los gráficos
@@ -31,6 +31,41 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                 count += 1;
             })
         });
+
+        var max = 0;
+        var maxFecha = '';
+        var maxVar = '';
+        var min = 10000;
+        var minFecha = '';
+        var minVar = '';
+        Object.keys(x).forEach(i => {
+            var col = 0;
+            x[i].forEach(v => {
+                if (v > max) {
+                    max = v;
+                    maxFecha = Object.values(x[0])[col];
+                    maxVar = lineNames[i];
+                }
+
+                if (v < min && v !== null) {
+                    min = v;
+                    minFecha = Object.values(x[0])[col];
+                    minVar = lineNames[i];
+                }
+
+                col += 1;
+            })
+        })
+    }
+
+    //convertidor de fecha
+    function fechaFormat(ftxt) {
+        var ftxt = ftxt.split("-");
+        var f = new Date(ftxt[0], ftxt[1], ftxt[2]);
+        var dateFormat = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        var ultimaFecha = f.toLocaleDateString("es", dateFormat);
+
+        return ultimaFecha;
     }
 
     const { data, setData, post, processing, reset, errors } = useForm({
@@ -221,6 +256,129 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
         }
     }
 
+    //estadisticas
+    function stats() {
+        if (Object.keys(datos).length !== 0) {
+            function cabeza() {
+                return (
+                    <div className='m-2 border-b-2 border-dashed'>
+                        {'Estadísticas para la variable ' + variable}
+                    </div>
+                );
+            }
+
+            function contenido(medida) {
+                return (
+                    <div className='flex flex-row'>
+                        <div className='w-1/2 m-4 p-2 rounded-lg border-2'>
+                            {'Máximo valor de ' + variable + ' encontrado'}
+                            <div className='text-4xl font-bold text-green-600'>
+                                {max + ' ' + medida}
+                            </div>
+                            <div className='flex flex-row gap-1'>
+                                Para el valor de
+                                <div className='font-bold'>{maxVar}</div>
+                                {'del ' + fechaFormat(maxFecha)}
+                            </div>
+                        </div>
+                        <div className='w-1/2 m-4 p-2 rounded-lg border-2'>
+                            {'Mínimo valor de ' + variable + ' encontrado'}
+                            <div className='text-4xl font-bold text-blue-600'>
+                                {min + ' ' + medida}
+                            </div>
+                            <div className='flex flex-row gap-1'>
+                                Para el valor de
+                                <div className='font-bold'>{minVar}</div>
+                                {'del ' + fechaFormat(minFecha)}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            switch (variable) {
+                case 'Temperatura':
+                    return (
+                        <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            {cabeza()}
+                            {contenido('°C')}
+                        </div>
+                    );
+
+                case 'Temperatura Húmeda':
+                    return (
+                        <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            {cabeza()}
+                            {contenido('°C')}
+                        </div>
+                    );
+
+                case 'Humedad Relativa':
+                    return (
+                        <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            {cabeza()}
+                            {contenido('%')}
+                        </div>
+                    );
+
+                case 'Presión de vapor':
+                    return (
+                        <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            {cabeza()}
+                            {contenido('mmHg')}
+                        </div>
+                    );
+
+                case 'Precipitación':
+                    return (
+                        <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            {cabeza()}
+                            {contenido('mm')}
+                        </div>
+                    );
+
+                case 'Fenómenos':
+                    return;
+
+                case 'Velocidad del viento':
+                    return (
+                        <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            {cabeza()}
+                            {contenido('Beaufort')}
+                        </div>
+                    );
+
+                case 'Dirección del viento':
+                    return;
+
+                case 'Nubosidad':
+                    return (
+                        <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            {cabeza()}
+                            {contenido('Décimas')}
+                        </div>
+                    );
+
+                case 'Visibilidad':
+                    return (
+                        <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            {cabeza()}
+                            {contenido('Km')}
+                        </div>
+                    );
+
+                case 'Estado del suelo':
+                    return;
+
+                case 'Estado del rocio':
+                    return;
+
+                default:
+                    break;
+            }
+        }
+    }
+
     //gráfico 1: lineas 1 variable a traves del tiempo
     function grafico1(titulo, variable) {
         //configuración
@@ -233,49 +391,43 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
         return (
             <div className='flex flex-col md:flex-row'>
                 <Plot
-                    className='overflow-hidden rounded-lg mx-auto max-w-sm sm:max-w-xl'
+                    className='overflow-hidden rounded-lg max-w-sm sm:max-w-xl max-h-96'
                     data={[
                         {
                             x: x[0],
                             y: x[1],
                             name: lineNames[1],
                             type: 'scatter',
-                            hoverinfo: 'y',
                         },
                         {
                             x: x[0],
                             y: x[2],
                             name: lineNames[2],
                             type: 'scatter',
-                            hoverinfo: 'y',
                         },
                         {
                             x: x[0],
                             y: x[3],
                             name: lineNames[3],
                             type: 'scatter',
-                            hoverinfo: 'y',
                         },
                         {
                             x: x[0],
                             y: x[4],
                             name: lineNames[4],
                             type: 'scatter',
-                            hoverinfo: 'y',
                         },
                         {
                             x: x[0],
                             y: x[5],
                             name: lineNames[5],
                             type: 'scatter',
-                            hoverinfo: 'y',
                         },
                         {
                             x: x[0],
                             y: x[6],
                             name: lineNames[6],
                             type: 'scatter',
-                            hoverinfo: 'y',
                         },
                     ]}
                     layout={{
@@ -302,7 +454,7 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
         return (
             <div className='flex flex-col md:flex-row'>
                 <Plot
-                    className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
+                    className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl max-h-96'
                     data={[
                         {
                             x: x[0],
@@ -364,6 +516,39 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                 />
             </div>
         );
+    }
+
+    function downloadCsv() {
+        if (Object.keys(datos).length !== 0) {
+            var csv = '';
+            var sep = ',';
+            var cols = 0;
+
+            Object.keys(datos[0]).forEach(i => {
+                sep = cols == 0 ? '' : ',';
+                csv += sep + i;
+                cols += 1;
+            })
+            cols = 0;
+            csv += "\n";
+
+            Object.keys(datos).forEach(i => {
+                Object.values(datos[i]).forEach(j => {
+                    if (j == null) { j = '' };
+                    sep = cols == 0 ? '' : ',';
+                    csv += sep + j;
+                    cols += 1;
+                })
+                cols = 0;
+                csv += "\n";
+            })
+
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = 'data.csv';
+            hiddenElement.click();
+        }
     }
 
     return (
@@ -458,8 +643,18 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                         </form>
 
                         <div className='flex flex-row'>
-                            <div className='m-4 w-1/2 border-2 h-fit rounded-lg'>
-                                {tabla()}
+                            <div className='m-4 w-1/2'>
+                                <button
+                                    className='px-2 py-1 mb-2 bg-blue-600 hover:bg-blue-800 text-white rounded-lg flex flex-row text-sm'
+                                    onClick={(e) => downloadCsv()}
+                                >
+                                    <Icon path={mdiDownload} size={0.8} />
+                                    Descargar datos
+                                </button>
+
+                                <div className='border-2 h-fit rounded-lg'>
+                                    {tabla()}
+                                </div>
                             </div>
 
                             <div className='m-4'>
@@ -467,6 +662,9 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                             </div>
                         </div>
                     </div>
+
+                    {stats()}
+
                 </div>
             </div>
         </AuthenticatedLayout>

@@ -25,6 +25,9 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
         var nub07 = [], nub14 = [], nub21 = [], nub = [];
         var vis07 = [], vis14 = [], vis21 = [];
         var fray = [], ftea = [], ftee = [], fgra = [], fchu = [];
+        var rd07 = [], rd14 = [], rd21 = [], rd = [];
+        var es07 = [], es14 = [], es21 = [];
+        var er07 = [], er21 = [], erd = [];
 
         //sacando info de los datos para agregarlos a los arrays
         Object.keys(data).forEach(key => {
@@ -73,6 +76,19 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
             ftee.push(data[key].ftee);
             fgra.push(data[key].fgra);
             fchu.push(data[key].fchu);
+
+            rd07.push(data[key].rd07);
+            rd14.push(data[key].rd14);
+            rd21.push(data[key].rd21);
+            rd.push(data[key].rd);
+
+            es07.push(data[key].es07);
+            es14.push(data[key].es14);
+            es21.push(data[key].es21);
+
+            er07.push(data[key].er07);
+            er21.push(data[key].er21);
+            erd.push(data[key].erd);
         });
     }
 
@@ -297,7 +313,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                         <button
                             className='p-2 bg-green-600 hover:bg-green-800 text-white rounded-lg flex flex-row text-sm'
                             onClick={() => {
-                                //TODO
+                                window.open('/instrumentos/' + estacion.indice, '_self');
                             }}
                         >
                             <Icon className='mr-2 place-self-center' path={mdiCubeOutline} size={0.7} />
@@ -313,7 +329,8 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                                     "Precipitación y fenómenos detectados",
                                     "Viento",
                                     "Nubosidad",
-                                    "Visibilidad"
+                                    "Visibilidad",
+                                    "Estado del suelo y del rocío"
                                 ].forEach(mostrarDivs);
                                 document.getElementById("seccionDatos").scrollIntoView({ behavior: "smooth" })
                             }}
@@ -352,7 +369,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     function estacionFotos() {
         if (estacion !== null) {
             return (<>
-                <div id='seccionFotos' className='relative -top-16' />
+                <div id='seccionFotos' />
                 <div className="mt-4 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <button onClick={(e) => { mostrarDivTrigger('fotos') }}>
                         <div className='m-2 flex flex-row'>
@@ -360,7 +377,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                             <Icon path={mdiChevronLeft} rotate={90} vertical size={1} />
                         </div>
                     </button>
-                    <div className='border-t-2 border-dashed' id='fotos' style={{ display: 'none' }}>
+                    <div className='border-t-2 border-dashed' id='fotos' style={{ display: 'block' }}>
                         <div className='mx-auto mt-4'>
                             <div className='p-2 m-4 flex flex-row rounded-lg max-w-max bg-green-100'>
                                 <Icon className='mr-2 place-self-center' path={mdiInformationOutline} size={0.7} />
@@ -380,7 +397,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     function datosEncabezado() {
         if (estacion !== null) {
             return (<>
-                <div id='seccionDatos' className='relative -top-16' />
+                <div id='seccionDatos' />
                 <div className='mt-4 text-center font-semibold'>
                     --- DATOS RECOLECTADOS POR LA ESTACIÓN ---
                 </div>
@@ -419,13 +436,26 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                         );
 
                     case "viento":
-                        return grafico1("Velocidad del viento", "Beaufort", sa07, sa14, sa21, sa);
+                        return (
+                            <div className='flex flex-col md:flex-row place-content-center'>
+                                {grafico1("Velocidad del viento", "Beaufort", sa07, sa14, sa21, sa)}
+                                {grafico3()}
+                            </div>
+                        );
 
                     case "nubosidad":
                         return grafico1("Nubosidad", "Décimas", nub07, nub14, nub21, nub);
 
                     case "visivilidad":
                         return grafico1("Visibilidad", "Km", vis07, vis14, vis21, []);
+
+                    case "suelo":
+                        return (
+                            <div className='flex flex-col md:flex-row place-content-center'>
+                                {grafico4()}
+                                {grafico5()}
+                            </div>
+                        );
 
                     default:
                         break;
@@ -597,6 +627,218 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
         );
     }
 
+    //grafico 3: exclusivo para rumbo dominante
+    function grafico3() {
+        var route = '/datos/' + estacion.indice + '/Dirección del viento'
+        //configuración
+        const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
+        const config = {
+            displaylogo: false,
+            modeBarButtonsToRemove: removeButtons,
+        }
+
+        return (
+            <div className='flex flex-col'>
+                <div className='flex flex-col md:flex-row'>
+                    <Plot
+                        className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
+                        data={[
+                            {
+                                x: fechas,
+                                y: ["C"],
+                                name: 'bug fix',
+                                type: 'scatter',
+                                mode: 'markers',
+                                visible: 'legendonly',
+                                showlegend: false
+                            },
+                            {
+                                x: fechas,
+                                y: rd07,
+                                name: '7:00 am',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'gold' },
+                            },
+                            {
+                                x: fechas,
+                                y: rd14,
+                                name: '2:00 pm',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'orange' },
+                            },
+                            {
+                                x: fechas,
+                                y: rd21,
+                                name: '9:00 pm',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'blue' },
+                            },
+                            {
+                                x: fechas,
+                                y: rd,
+                                name: 'Del día',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'black' },
+                            },
+                        ]}
+                        layout={{
+                            title: 'Dirección del viento',
+                            autosize: true,
+                            scattermode: 'group',
+                            xaxis: { title: 'N = Norte | S = Sur | E = Este | W = Oeste' },
+                            yaxis: { title: 'Dirección', categoryorder: 'category ascending' },
+                        }}
+                        config={config}
+                    />
+                </div>
+                <a href={route} className='mx-2 my-1 text-blue-600 flex flex-row h-full place-items-end place-self-center'>
+                    Consultar datos completos
+                    <Icon path={mdiChevronLeft} horizontal size={1} />
+                </a>
+            </div>
+        );
+    }
+
+    //grafico 4: exclusivo para estado del suelo
+    function grafico4() {
+        var route = '/datos/' + estacion.indice + '/Estado del suelo'
+        //configuración
+        const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
+        const config = {
+            displaylogo: false,
+            modeBarButtonsToRemove: removeButtons,
+        }
+
+        return (
+            <div className='flex flex-col'>
+                <div className='flex flex-col md:flex-row'>
+                    <Plot
+                        className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
+                        data={[
+                            {
+                                x: fechas,
+                                y: ["0"],
+                                name: 'bug fix',
+                                type: 'scatter',
+                                mode: 'markers',
+                                visible: 'legendonly',
+                                showlegend: false
+                            },
+                            {
+                                x: fechas,
+                                y: es07,
+                                name: '7:00 am',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'gold' },
+                            },
+                            {
+                                x: fechas,
+                                y: es14,
+                                name: '2:00 pm',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'orange' },
+                            },
+                            {
+                                x: fechas,
+                                y: es21,
+                                name: '9:00 pm',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'blue' },
+                            },
+                        ]}
+                        layout={{
+                            title: 'Estado del suelo',
+                            autosize: true,
+                            scattermode: 'group',
+                            xaxis: { title: '0 = Seco | 1 = Humedo | 2 = Muy humedo' },
+                            yaxis: { title: 'Estado', type: 'category', categoryorder: 'category ascending' },
+                        }}
+                        config={config}
+                    />
+                </div>
+                <a href={route} className='mx-2 my-1 text-blue-600 flex flex-row h-full place-items-end place-self-center'>
+                    Consultar datos completos
+                    <Icon path={mdiChevronLeft} horizontal size={1} />
+                </a>
+            </div>
+        );
+    }
+
+    //grafico 5: exclusivo para estado del rocio
+    function grafico5() {
+        var route = '/datos/' + estacion.indice + '/Estado del rocio'
+        //configuración
+        const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
+        const config = {
+            displaylogo: false,
+            modeBarButtonsToRemove: removeButtons,
+        }
+
+        return (
+            <div className='flex flex-col'>
+                <div className='flex flex-col md:flex-row'>
+                    <Plot
+                        className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
+                        data={[
+                            {
+                                x: fechas,
+                                y: ["0"],
+                                name: 'bug fix',
+                                type: 'scatter',
+                                mode: 'markers',
+                                visible: 'legendonly',
+                                showlegend: false
+                            },
+                            {
+                                x: fechas,
+                                y: er07,
+                                name: '7:00 am',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'gold' },
+                            },
+                            {
+                                x: fechas,
+                                y: er21,
+                                name: '9:00 pm',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'blue' },
+                            },
+                            {
+                                x: fechas,
+                                y: erd,
+                                name: 'del día',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'black' },
+                            },
+                        ]}
+                        layout={{
+                            title: 'Estado del rocío',
+                            autosize: true,
+                            scattermode: 'group',
+                            xaxis: { title: '. = No hay | 0 = Poco | 1 = Mucho | 2 = Abundante' },
+                            yaxis: { title: 'Estado', type: 'category', categoryorder: 'category ascending' },
+                        }}
+                        config={config}
+                    />
+                </div>
+                <a href={route} className='mx-2 my-1 text-blue-600 flex flex-row h-full place-items-end place-self-center'>
+                    Consultar datos completos
+                    <Icon path={mdiChevronLeft} horizontal size={1} />
+                </a>
+            </div>
+        );
+    }
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -635,20 +877,13 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
 
                     {seccionDatos("Precipitación y fenómenos detectados", "precipitacion")}
 
-                    {
-                        //TODO this seccion could also have the wind direccion variables (rd07	rd14	rd21	rd)
-                        //diferent presentation as those variables record the direction of wind as a not numerical char (N, W, E, S, C)
-                        seccionDatos("Viento", "viento")
-                    }
+                    {seccionDatos("Viento", "viento")}
 
                     {seccionDatos("Nubosidad", "nubosidad")}
 
                     {seccionDatos("Visibilidad", "visivilidad")}
 
-                    {
-                        //TODO preguntar que significan las variables de estado de suelo y estado de rocio (es, er, erd)
-                        //que significa la medida 012 y .012, como se interpreta
-                    }
+                    {seccionDatos("Estado del suelo y del rocío", "suelo")}
 
                 </div>
             </div>

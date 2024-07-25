@@ -19,7 +19,7 @@ Route::get('datos/{estacion?}/{variable?}', [DataController::class,'index'])
 Route::post('datos', [DataController::class,'filtro'])
 ->name('filtro');
 
-Route::get('instrumentos/{instrumento?}', [InstrumentosController::class, 'index'])
+Route::get('instrumentos/{estacion?}/{instrumento?}', [InstrumentosController::class, 'index'])
 ->name('instrumentos');
 
 Route::middleware('auth')->group(function () {

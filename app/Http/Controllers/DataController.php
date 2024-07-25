@@ -72,7 +72,7 @@ class DataController extends Controller
         }
 
         $estaciones = DB::table('estaciones')->orderBy('indice')->get();
-        $datos = DB::table('data')->where('indice', $estacion)->orderBy('fecha', 'desc')->get($columnas);
+        $datos = DB::table('data')->where('indice', $estacion)->whereBetween('fecha', ['2000-01-01', '2021-12-31'])->orderBy('fecha', 'desc')->get($columnas);
         $estacionElegida = DB::table('estaciones')->where('indice', $estacion)->first();
 
         return Inertia::render('Datos', [
