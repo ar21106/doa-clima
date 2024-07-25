@@ -1,7 +1,7 @@
-INSERT INTO estaciones(indice, nombre, descripcion, direccion, latitud, longitud) values('A-31', 'Montecristo', 'Esta será la descripción de la estacion meteorológica Montecristo', 'Parque nacional Montecristo Trifinio, Metapán, Santa Ana', 14.3625, -89.3996);
-INSERT INTO estaciones(indice, nombre, descripcion, direccion, latitud, longitud) values('G-03','Nueva Concepcion', 'Esta será la descripción de la estacion meteorológica Nueva Concepcion', 'Nueva Concepción, Agua Caliente, Chalatenango', 14.1297708, -89.3011452);
-INSERT INTO estaciones(indice, nombre, descripcion, direccion, latitud, longitud) values('L-04', 'San Andres', 'Esta será la descripción de la estacion meteorológica San Andres', 'Periferico Claudia Lars, Puente rio colón, Ciudad Arce, La Libertad', 13.768187, -89.41183);
-INSERT INTO estaciones(indice, nombre, descripcion, direccion, latitud, longitud) values('U-06', 'Santiago Maria', 'Esta será la descripción de la estacion meteorológica Santiago Maria', 'Av 15 de septiembre, Centro Escolar Santiago de Maria, Santiago de Maria, Usulután', 13.479639, -88.47153);
+INSERT INTO estaciones(indice, nombre, direccion, latitud, longitud) values('A-31', 'Montecristo', 'Parque nacional Montecristo Trifinio, Metapán, Santa Ana', 14.3625, -89.3996);
+INSERT INTO estaciones(indice, nombre, direccion, latitud, longitud) values('G-03','Nueva Concepcion', 'Nueva Concepción, Agua Caliente, Chalatenango', 14.1297708, -89.3011452);
+INSERT INTO estaciones(indice, nombre, direccion, latitud, longitud) values('L-04', 'San Andres', 'Periferico Claudia Lars, Puente rio colón, Ciudad Arce, La Libertad', 13.768187, -89.41183);
+INSERT INTO estaciones(indice, nombre, direccion, latitud, longitud) values('U-06', 'Santiago Maria', 'Av 15 de septiembre, Centro Escolar Santiago de Maria, Santiago de Maria, Usulután', 13.479639, -88.47153);
 
 INSERT INTO fotos(indice, name) values('A-31','1.jpeg');
 INSERT INTO fotos(indice, name) values('A-31','2.jpeg');

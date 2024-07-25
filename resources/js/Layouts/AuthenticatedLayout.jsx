@@ -80,6 +80,9 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('datos')} active={route().current('datos')}>
                                     Datos
                                 </NavLink>
+                                <NavLink href={route('instrumentos')} active={route().current('instrumentos')}>
+                                    Modelos 3D
+                                </NavLink>
                             </div>
                         </div>
 
@@ -150,6 +153,9 @@ export default function Authenticated({ user, header, children }) {
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('datos')} active={route().current('datos')}>
                             Datos
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('instrumentos')} active={route().current('instrumentos')}>
+                            Modelos 3D
                         </ResponsiveNavLink>
                     </div>
 

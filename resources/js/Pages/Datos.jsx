@@ -49,8 +49,8 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
     function variables() {
         return (<>
             <option key="Temperatura" value="Temperatura">Temperatura</option>
-            <option key="Temperatura Humeda" value="Temperatura Humeda">Temperatura Humeda</option>
-            <option key="Humedad relativa" value="Humedad relativa">Humedad relativa</option>
+            <option key="Temperatura Húmeda" value="Temperatura Húmeda">Temperatura Húmeda</option>
+            <option key="Humedad Relativa" value="Humedad Relativa">Humedad Relativa</option>
             <option key="Presión de vapor" value="Presión de vapor">Presión de vapor</option>
             <option key="Precipitación" value="Precipitación">Precipitación</option>
             <option key="Fenómenos" value="Fenómenos">Fenómenos</option>
@@ -143,13 +143,13 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                         {grafico1("Temperatura °C", "°C")}
                     </>);
 
-                case 'Temperatura Humeda':
+                case 'Temperatura Húmeda':
                     return (<>
                         {encabezado()}
                         {grafico1("Temperatura Humeda °C", "°C")}
                     </>);
 
-                case 'Humedad relativa':
+                case 'Humedad Relativa':
                     return (<>
                         {encabezado()}
                         {grafico1("Humedad relativa %", "%")}
@@ -170,9 +170,7 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                 case 'Fenómenos':
                     return (<>
                         {encabezado()}
-                        {
-                            //TODO
-                        }
+                        {grafico2()}
                     </>);
 
                 case 'Velocidad del viento':
@@ -201,6 +199,22 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                         {grafico1("Visibilidad Km", "Km")}
                     </>);
 
+                case 'Estado del suelo':
+                    return (<>
+                        {encabezado()}
+                        {
+                            //TODO
+                        }
+                    </>);
+
+                case 'Estado del rocio':
+                    return (<>
+                        {encabezado()}
+                        {
+                            //TODO
+                        }
+                    </>);
+
                 default:
                     break;
             }
@@ -208,9 +222,7 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
     }
 
     //gráfico 1: lineas 1 variable a traves del tiempo
-    //TODO finish this graph
     function grafico1(titulo, variable) {
-
         //configuración
         const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
         const config = {
@@ -271,6 +283,82 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                         autosize: true,
                         xaxis: { title: 'fecha' },
                         yaxis: { title: variable },
+                    }}
+                    config={config}
+                />
+            </div>
+        );
+    }
+
+    //grafico 2: exclusivo para fenomenos
+    function grafico2() {
+        //configuración
+        const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
+        const config = {
+            displaylogo: false,
+            modeBarButtonsToRemove: removeButtons,
+        }
+
+        return (
+            <div className='flex flex-col md:flex-row'>
+                <Plot
+                    className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
+                    data={[
+                        {
+                            x: x[0],
+                            y: ["00:00:00"],
+                            name: 'bug fix',
+                            type: 'scatter',
+                            mode: 'markers',
+                            visible: 'legendonly',
+                            showlegend: false
+                        },
+                        {
+                            x: x[0],
+                            y: x[1],
+                            name: 'Rayo',
+                            type: 'scatter',
+                            mode: 'markers',
+                            line: { color: 'gold' },
+                        },
+                        {
+                            x: x[0],
+                            y: x[2],
+                            name: 'Tormenta alrededores',
+                            type: 'scatter',
+                            mode: 'markers',
+                            line: { color: 'skyblue' },
+                        },
+                        {
+                            x: x[0],
+                            y: x[3],
+                            name: 'Tormenta',
+                            type: 'scatter',
+                            mode: 'markers',
+                            line: { color: 'black' },
+                        },
+                        {
+                            x: x[0],
+                            y: x[4],
+                            name: 'Granizo',
+                            type: 'scatter',
+                            mode: 'markers',
+                            line: { color: 'Aqua' },
+                        },
+                        {
+                            x: x[0],
+                            y: x[5],
+                            name: 'Chubasco',
+                            type: 'scatter',
+                            mode: 'markers',
+                            line: { color: 'blue' },
+                        },
+                    ]}
+                    layout={{
+                        title: 'Fenómenos detectados',
+                        autosize: true,
+                        xaxis: { title: 'fecha' },
+                        yaxis: { title: 'Hora', categoryorder: 'category ascending' },
                     }}
                     config={config}
                 />
@@ -370,7 +458,7 @@ export default function Datos({ auth, estaciones, datos, estacion, variable }) {
                         </form>
 
                         <div className='flex flex-row'>
-                            <div className='m-4 w-1/2 border-2 rounded-lg'>
+                            <div className='m-4 w-1/2 border-2 h-fit rounded-lg'>
                                 {tabla()}
                             </div>
 

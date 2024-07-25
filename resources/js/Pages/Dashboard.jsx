@@ -5,7 +5,7 @@ import { TileLayer } from 'react-leaflet/TileLayer';
 import { Marker } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import Icon from '@mdi/react';
-import { mdiCamera, mdiChartBar, mdiChevronLeft, mdiInformationOutline, mdiMapSearchOutline, mdiOpenInNew, mdiWaterPercent } from '@mdi/js';
+import { mdiCamera, mdiChartBar, mdiChevronLeft, mdiCubeOutline, mdiInformationOutline, mdiMapSearchOutline, mdiOpenInNew, mdiWaterPercent } from '@mdi/js';
 import { mdiThermometer, mdiThermometerAlert, mdiThermometerCheck } from '@mdi/js';
 import Plot from 'react-plotly.js';
 import ImageSlider from '@/Components/ImageSlider';
@@ -295,10 +295,25 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                     }
                     <div className='flex flex-row justify-end gap-4'>
                         <button
+                            className='p-2 bg-green-600 hover:bg-green-800 text-white rounded-lg flex flex-row text-sm'
+                            onClick={() => {
+                                //TODO
+                            }}
+                        >
+                            <Icon className='mr-2 place-self-center' path={mdiCubeOutline} size={0.7} />
+                            Ver modelos 3D
+                        </button>
+                        <button
                             className='p-2 bg-blue-600 hover:bg-blue-800 text-white rounded-lg flex flex-row text-sm'
                             onClick={() => {
                                 [
-                                    "Temperatura", "Humedad Relativa", "Presion de vapor", "Precipitación", "Viento", "Nubosidad", "Visibilidad"
+                                    "Temperatura",
+                                    "Humedad Relativa",
+                                    "Presion de vapor",
+                                    "Precipitación y fenómenos detectados",
+                                    "Viento",
+                                    "Nubosidad",
+                                    "Visibilidad"
                                 ].forEach(mostrarDivs);
                                 document.getElementById("seccionDatos").scrollIntoView({ behavior: "smooth" })
                             }}
@@ -380,44 +395,36 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
     //seccion de datos
     function seccionDatos(titulo, medida) {
         if (estacion !== null) {
-            var route = "/datos";
             function grafico() {
                 switch (medida) {
                     case "temperatura":
-                        route = "/datos/Temperatura";
                         return (
                             <div className='flex flex-col md:flex-row place-content-center'>
-                                {grafico1("Temperatura °C", "°C", ts07, ts14, ts21, ts)}
-                                {grafico1("Temperatura Húmeda °C", "°C", th07, th14, th21, th)}
+                                {grafico1("Temperatura", "°C", ts07, ts14, ts21, ts)}
+                                {grafico1("Temperatura Húmeda", "°C", th07, th14, th21, th)}
                             </div>
                         )
                     case "humedad":
-                        route = "/datos/Humedad relativa";
-                        return grafico1("Humedad Relativa %", "%", hr07, hr14, hr21, hr);
+                        return grafico1("Humedad Relativa", "%", hr07, hr14, hr21, hr);
 
                     case "presion de vapor":
-                        route = "/datos/Presión de vapor";
-                        return grafico1("Presión de vapor mmHg", "mmHg", pvp07, pvp14, pvp21, pvp);
+                        return grafico1("Presión de vapor", "mmHg", pvp07, pvp14, pvp21, pvp);
 
                     case "precipitacion":
-                        route = "/datos/Precipitación";
                         return (
                             <div className='flex flex-col md:flex-row place-content-center'>
-                                {grafico1("Precipitación mm", "mm", p07, p14, p21, pd)}
+                                {grafico1("Precipitación ", "mm", p07, p14, p21, pd)}
                                 {grafico2()}
                             </div>
                         );
 
                     case "viento":
-                        route = "/datos/Velocidad del viento";
-                        return grafico1("Velocidad del viento (Beaufort)", "Beaufort", sa07, sa14, sa21, sa);
+                        return grafico1("Velocidad del viento", "Beaufort", sa07, sa14, sa21, sa);
 
                     case "nubosidad":
-                        route = "/datos/Nubosidad";
                         return grafico1("Nubosidad", "Décimas", nub07, nub14, nub21, nub);
 
                     case "visivilidad":
-                        route = "/datos/Visibilidad";
                         return grafico1("Visibilidad", "Km", vis07, vis14, vis21, []);
 
                     default:
@@ -435,10 +442,6 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
                     </button>
                     <div className='border-t-2 border-dashed' id={titulo} style={{ display: 'block' }}>
                         {grafico()}
-                        <a href={route} className='mx-2 my-1 text-blue-600 flex flex-row place-content-end'>
-                            Consultar datos completos
-                            <Icon path={mdiChevronLeft} horizontal size={1}/>
-                        </a>
                     </div>
                 </div>
 
@@ -449,6 +452,7 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
 
     //gráfico 1: 3 barras para medidas 7am, 2pm y 9pm y linea para valor medio
     function grafico1(titulo, variable, v07, v14, v21, media) {
+        var route = '/datos/' + estacion.indice + '/' + titulo
 
         //configuración
         const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
@@ -458,54 +462,61 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
         }
 
         return (
-            <div className='flex flex-col md:flex-row'>
-                <Plot
-                    className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
-                    data={[
-                        {
-                            x: fechas,
-                            y: v07,
-                            name: '7:00 am',
-                            type: 'bar',
-                            marker: { color: 'yellow' }
-                        },
-                        {
-                            x: fechas,
-                            y: v14,
-                            name: '2:00 pm',
-                            type: 'bar',
-                            marker: { color: 'orange' }
-                        },
-                        {
-                            x: fechas,
-                            y: v21,
-                            name: '9:00 pm',
-                            type: 'bar',
-                            marker: { color: 'blue' }
-                        },
-                        {
-                            x: fechas,
-                            y: media,
-                            name: 'media',
-                            type: 'scatter',
-                            line: { color: 'black', shape: 'spline' },
-                        },
-                    ]}
-                    layout={{
-                        title: titulo,
-                        barmode: 'group',
-                        autosize: true,
-                        xaxis: { title: 'fecha' },
-                        yaxis: { title: variable },
-                    }}
-                    config={config}
-                />
+            <div className='flex flex-col'>
+                <div className='flex flex-col md:flex-row'>
+                    <Plot
+                        className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
+                        data={[
+                            {
+                                x: fechas,
+                                y: v07,
+                                name: '7:00 am',
+                                type: 'bar',
+                                marker: { color: 'yellow' }
+                            },
+                            {
+                                x: fechas,
+                                y: v14,
+                                name: '2:00 pm',
+                                type: 'bar',
+                                marker: { color: 'orange' }
+                            },
+                            {
+                                x: fechas,
+                                y: v21,
+                                name: '9:00 pm',
+                                type: 'bar',
+                                marker: { color: 'blue' }
+                            },
+                            {
+                                x: fechas,
+                                y: media,
+                                name: 'media',
+                                type: 'scatter',
+                                line: { color: 'black', shape: 'spline' },
+                            },
+                        ]}
+                        layout={{
+                            title: titulo + ' (' + variable + ')',
+                            barmode: 'group',
+                            autosize: true,
+                            xaxis: { title: 'fecha' },
+                            yaxis: { title: variable },
+                        }}
+                        config={config}
+                    />
+                </div>
+                <a href={route} className='mx-2 my-1 text-blue-600 flex flex-row h-full place-items-end place-self-center'>
+                    Consultar datos completos
+                    <Icon path={mdiChevronLeft} horizontal size={1} />
+                </a>
             </div>
         );
     }
 
     //grafico 2: exclusivo para fenomenos
     function grafico2() {
+        var route = '/datos/' + estacion.indice + '/Fenómenos'
         //configuración
         const removeButtons = ['lasso2d', 'select2d', 'resetScale2d'];
         const config = {
@@ -514,60 +525,74 @@ export default function Dashboard({ auth, estacionesMap, estacion, data, fotos }
         }
 
         return (
-            <div className='flex flex-col md:flex-row'>
-                <Plot
-                    className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
-                    data={[
-                        {
-                            x: fechas,
-                            y: fray,
-                            name: 'Rayo',
-                            type: 'scatter',
-                            mode: 'markers',
-                            line: { color: 'gold' }
-
-                        },
-                        {
-                            x: fechas,
-                            y: ftea,
-                            name: 'Tormenta alrededores',
-                            type: 'scatter',
-                            mode: 'markers',
-                            line: { color: 'skyblue' }
-                        },
-                        {
-                            x: fechas,
-                            y: ftee,
-                            name: 'Tormenta',
-                            type: 'scatter',
-                            mode: 'markers',
-                            line: { color: 'black' }
-                        },
-                        {
-                            x: fechas,
-                            y: fgra,
-                            name: 'Granizo',
-                            type: 'scatter',
-                            mode: 'markers',
-                            line: { color: 'Aqua' }
-                        },
-                        {
-                            x: fechas,
-                            y: fchu,
-                            name: 'Chubasco',
-                            type: 'scatter',
-                            mode: 'markers',
-                            line: { color: 'blue' }
-                        },
-                    ]}
-                    layout={{
-                        title: 'Fenómenos detectados',
-                        autosize: true,
-                        xaxis: { title: 'fecha' },
-                        yaxis: { title: 'Hora', categoryorder: 'category ascending' },
-                    }}
-                    config={config}
-                />
+            <div className='flex flex-col'>
+                <div className='flex flex-col md:flex-row'>
+                    <Plot
+                        className='overflow-hidden mx-auto rounded-lg max-w-sm sm:max-w-xl'
+                        data={[
+                            {
+                                x: fechas,
+                                y: ["00:00:00"],
+                                name: 'bug fix',
+                                type: 'scatter',
+                                mode: 'markers',
+                                visible: 'legendonly',
+                                showlegend: false
+                            },
+                            {
+                                x: fechas,
+                                y: fray,
+                                name: 'Rayo',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'gold' },
+                            },
+                            {
+                                x: fechas,
+                                y: ftea,
+                                name: 'Tormenta alrededores',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'skyblue' },
+                            },
+                            {
+                                x: fechas,
+                                y: ftee,
+                                name: 'Tormenta',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'black' },
+                            },
+                            {
+                                x: fechas,
+                                y: fgra,
+                                name: 'Granizo',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'Aqua' },
+                            },
+                            {
+                                x: fechas,
+                                y: fchu,
+                                name: 'Chubasco',
+                                type: 'scatter',
+                                mode: 'markers',
+                                line: { color: 'blue' },
+                            },
+                        ]}
+                        layout={{
+                            title: 'Fenómenos detectados',
+                            autosize: true,
+                            xaxis: { title: 'fecha' },
+                            yaxis: { title: 'Hora', categoryorder: 'category ascending' },
+                        }}
+                        config={config}
+                    />
+                </div>
+                <a href={route} className='mx-2 my-1 text-blue-600 flex flex-row h-full place-items-end place-self-center'>
+                    Consultar datos completos
+                    <Icon path={mdiChevronLeft} horizontal size={1} />
+                </a>
             </div>
         );
     }

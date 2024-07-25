@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('estaciones', function (Blueprint $table) {
             $table->string('indice')->primary();
             $table->string('nombre');
-            $table->string('descripcion');
             $table->string('direccion');
             $table->double('latitud');
             $table->double('longitud');

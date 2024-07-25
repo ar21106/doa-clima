@@ -12,7 +12,7 @@ class DataController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(?string $variable = "Temperatura"): Response
+    public function index(?string $estacion = "A-31", ?string $variable = "Temperatura"): Response
     {
         $columnas = [];
 
@@ -21,11 +21,11 @@ class DataController extends Controller
                 $columnas = ['fecha', 'tmax', 'tmin', 'ts07', 'ts14', 'ts21', 'ts'];
                 break;
 
-            case 'Temperatura Humeda':
+            case 'Temperatura Húmeda':
                 $columnas = ['fecha', 'th07', 'th14', 'th21', 'th'];
                 break;
 
-            case 'Humedad relativa':
+            case 'Humedad Relativa':
                 $columnas = ['fecha', 'hr07', 'hr14', 'hr21', 'hr'];
                 break;
 
@@ -72,8 +72,8 @@ class DataController extends Controller
         }
 
         $estaciones = DB::table('estaciones')->orderBy('indice')->get();
-        $datos = DB::table('data')->where('indice', 'A-31')->whereBetween('fecha', ['2020-01-01', '2021-12-31'])->orderBy('fecha', 'desc')->get($columnas);
-        $estacionElegida = DB::table('estaciones')->where('indice', 'A-31')->first();
+        $datos = DB::table('data')->where('indice', $estacion)->orderBy('fecha', 'desc')->get($columnas);
+        $estacionElegida = DB::table('estaciones')->where('indice', $estacion)->first();
 
         return Inertia::render('Datos', [
             'estaciones' => $estaciones,
@@ -101,11 +101,11 @@ class DataController extends Controller
                 $columnas = ['fecha', 'tmax', 'tmin', 'ts07', 'ts14', 'ts21', 'ts'];
                 break;
 
-            case 'Temperatura Humeda':
+            case 'Temperatura Húmeda':
                 $columnas = ['fecha', 'th07', 'th14', 'th21', 'th'];
                 break;
 
-            case 'Humedad relativa':
+            case 'Humedad Relativa':
                 $columnas = ['fecha', 'hr07', 'hr14', 'hr21', 'hr'];
                 break;
 
